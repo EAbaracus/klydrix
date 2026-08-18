@@ -288,10 +288,19 @@ class ValidationPipeline:
         """
         context_hash = self._build_context_hash(brief)
         normalized_target = candidate.name.lower().strip()
+        
+        # Convert policy to dict - handle both Pydantic models and dataclasses
+        if hasattr(adapter.policy, 'model_dump'):
+            policy_dict = adapter.policy.model_dump()
+        elif hasattr(adapter.policy, '__dict__'):
+            policy_dict = adapter.policy.__dict__
+        else:
+            policy_dict = {}
+        
         key_data = {
             "channel": self._get_channel_from_adapter(adapter).value,
             "adapter_version": adapter.version,
-            "policy_version": json.dumps(asdict(adapter.policy), sort_keys=True),
+            "policy_version": json.dumps(policy_dict, sort_keys=True),
             "normalized_target": normalized_target,
             "context_hash": context_hash,
         }
