@@ -79,18 +79,19 @@ def test_validation_result_model():
     assert result.checked_at == now
     assert result.manual_review_url == "http://review.example.com"
 
-    # Test optional fields
+    # Test optional fields (manual_review_url)
     result2 = ValidationResult(
         target="example.com",
         channel=ValidationChannel.DOMAIN,
         status=ValidationStatus.AVAILABLE,
         confidence=Confidence.CONFIRMED,
         evidence=evidence,
+        candidate_id="456",
         validation_id="val-2",
         adapter_version="1.0",
         checked_at=now,
     )
-    assert result2.candidate_id is None
+    assert result2.candidate_id == "456"
     assert result2.manual_review_url is None
 
 
@@ -104,6 +105,7 @@ def test_cache_entry_model():
         status=ValidationStatus.AVAILABLE,
         confidence=Confidence.CONFIRMED,
         evidence=evidence,
+        candidate_id="789",
         validation_id="val-1",
         adapter_version="1.0",
         checked_at=now,

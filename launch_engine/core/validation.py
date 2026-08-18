@@ -46,7 +46,7 @@ class ValidationResult(BaseModel):
     status: ValidationStatus
     confidence: Confidence
     evidence: Evidence
-    candidate_id: Optional[str] = None
+    candidate_id: str
     validation_id: str
     adapter_version: str
     checked_at: datetime
