@@ -37,9 +37,11 @@ class LLMAdapter:
         elif self.provider == "anthropic":
             return f"anthropic/{self.model}"
         elif self.provider == "9router":
-            # For 9router, we assume it's an OpenAI-compatible endpoint.
-            # We use the model name as-is and rely on environment variables for the base URL.
-            return self.model
+            # 9router is an OpenAI-compatible endpoint exposed via LiteLLM's
+            # openai provider with a custom base URL (NINEROUTER_URL).
+            # Prefix with "openai/" so LiteLLM routes through the openai
+            # provider and picks up api_base/api_key from the environment.
+            return f"openai/{self.model}"
 
     async def generate(self, prompt: str) -> str:
         """

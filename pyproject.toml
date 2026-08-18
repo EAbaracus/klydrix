@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "launch-engine"
+name = "klydrix"
 version = "0.1.0"
-description = "Launch Engine for validating project names and trademarks"
+description = "KLYDRIX — AI brand-naming and validation engine (generate, score, and clear names across domain, trademark, and social channels)"
 authors = [{name = "Hermes Agent"}]
 dependencies = [
     "pydantic>=2.0",
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [project.scripts]
-launch-engine = "launch_engine.cli.main:app"
+klydrix = "launch_engine.cli.main:app"
 
 [project.optional-dependencies]
 dev = [
