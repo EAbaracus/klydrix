@@ -1,4 +1,4 @@
-"""LaunchEngine - Application layer orchestrating the brand naming pipeline."""
+"""KLYDRIX - Application layer orchestrating the brand naming pipeline."""
 
 from __future__ import annotations
 

@@ -1,13 +1,13 @@
-# Contributing to Launch Engine
+# Contributing to KLYDRIX
 
-Thank you for considering contributing to Launch Engine! We welcome contributions from the community.
+Thank you for considering contributing to KLYDRIX! We welcome contributions from the community.
 
 ## Development Environment Setup
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
    ```bash
-   git clone https://github.com/your-username/launch-engine.git
+   git clone https://github.com/EAbaracus/klydrix.git
    ```
 3. Create a virtual environment:
    ```bash
@@ -146,4 +146,4 @@ If you need help with your contribution, feel free to:
 - Reach out to maintainers
 - Check the existing documentation
 
-Thank you again for contributing to Launch Engine!
+Thank you again for contributing to KLYDRIX!

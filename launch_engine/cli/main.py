@@ -14,7 +14,7 @@ from launch_engine.modules.naming.brief import NamingBrief, PhoneticConstraints
 from launch_engine.modules.naming.candidates import NameCandidateList
 from launch_engine.core.validation import ValidationResult
 
-app = typer.Typer(help="Launch Engine - Brand naming and validation CLI")
+app = typer.Typer(help="KLYDRIX - Brand naming and validation CLI")
 console = Console()
 
 
