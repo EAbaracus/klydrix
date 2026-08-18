@@ -1,4 +1,5 @@
 """Integration tests for the full Launch Engine pipeline."""
+
 import asyncio
 import json
 from datetime import datetime
@@ -163,15 +164,25 @@ class TestFullPipelineIntegration:
     """Integration tests for the complete Launch Engine pipeline."""
 
     @pytest.mark.asyncio
-    async def test_full_pipeline_end_to_end(self, naming_brief, mock_candidates, mock_validation_results):
+    async def test_full_pipeline_end_to_end(
+        self, naming_brief, mock_candidates, mock_validation_results
+    ):
         """Test the complete pipeline from brief to validated candidates."""
-        with patch("launch_engine.engine.LLMAdapter") as mock_llm_class, \
-             patch("launch_engine.engine.SQLiteCache") as mock_cache_class, \
-             patch("launch_engine.engine.BrandNamingModule") as mock_bn_class, \
-             patch("launch_engine.engine.ValidationPipeline") as mock_vp_class, \
-             patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain_class, \
-             patch("launch_engine.validation.adapters.trademark.TrademarkAdapter") as mock_trademark_class, \
-             patch("launch_engine.validation.adapters.social.SocialMediaAdapter") as mock_social_class:
+        with (
+            patch("launch_engine.engine.LLMAdapter") as mock_llm_class,
+            patch("launch_engine.engine.SQLiteCache") as mock_cache_class,
+            patch("launch_engine.engine.BrandNamingModule") as mock_bn_class,
+            patch("launch_engine.engine.ValidationPipeline") as mock_vp_class,
+            patch(
+                "launch_engine.validation.adapters.domain.DomainAdapter"
+            ) as mock_domain_class,
+            patch(
+                "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+            ) as mock_trademark_class,
+            patch(
+                "launch_engine.validation.adapters.social.SocialMediaAdapter"
+            ) as mock_social_class,
+        ):
 
             # Setup LLM mock
             mock_llm = MagicMock()
@@ -202,7 +213,11 @@ class TestFullPipelineIntegration:
             mock_vp_class.return_value = mock_vp
 
             # Setup adapter mocks
-            for mock_adapter_class in [mock_domain_class, mock_trademark_class, mock_social_class]:
+            for mock_adapter_class in [
+                mock_domain_class,
+                mock_trademark_class,
+                mock_social_class,
+            ]:
                 mock_adapter = MagicMock()
                 mock_adapter.policy = MagicMock()
                 mock_adapter.policy.rate_limit_per_minute = 60
@@ -215,7 +230,9 @@ class TestFullPipelineIntegration:
                 cache_db_path=":memory:",
             )
 
-            candidates, validation_results = await engine.run_full_pipeline(naming_brief)
+            candidates, validation_results = await engine.run_full_pipeline(
+                naming_brief
+            )
 
             # Verify results
             assert candidates.brief_ref == naming_brief.project_codename
@@ -232,13 +249,21 @@ class TestFullPipelineIntegration:
     @pytest.mark.asyncio
     async def test_pipeline_with_partial_failures(self, naming_brief, mock_candidates):
         """Test pipeline behavior when some validations fail."""
-        with patch("launch_engine.engine.LLMAdapter") as mock_llm_class, \
-             patch("launch_engine.engine.SQLiteCache") as mock_cache_class, \
-             patch("launch_engine.engine.BrandNamingModule") as mock_bn_class, \
-             patch("launch_engine.engine.ValidationPipeline") as mock_vp_class, \
-             patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain_class, \
-             patch("launch_engine.validation.adapters.trademark.TrademarkAdapter") as mock_trademark_class, \
-             patch("launch_engine.validation.adapters.social.SocialMediaAdapter") as mock_social_class:
+        with (
+            patch("launch_engine.engine.LLMAdapter") as mock_llm_class,
+            patch("launch_engine.engine.SQLiteCache") as mock_cache_class,
+            patch("launch_engine.engine.BrandNamingModule") as mock_bn_class,
+            patch("launch_engine.engine.ValidationPipeline") as mock_vp_class,
+            patch(
+                "launch_engine.validation.adapters.domain.DomainAdapter"
+            ) as mock_domain_class,
+            patch(
+                "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+            ) as mock_trademark_class,
+            patch(
+                "launch_engine.validation.adapters.social.SocialMediaAdapter"
+            ) as mock_social_class,
+        ):
 
             # Setup mocks
             mock_llm = MagicMock()
@@ -296,7 +321,11 @@ class TestFullPipelineIntegration:
             mock_vp.validate_all = AsyncMock(return_value=partial_results)
             mock_vp_class.return_value = mock_vp
 
-            for mock_adapter_class in [mock_domain_class, mock_trademark_class, mock_social_class]:
+            for mock_adapter_class in [
+                mock_domain_class,
+                mock_trademark_class,
+                mock_social_class,
+            ]:
                 mock_adapter = MagicMock()
                 mock_adapter.policy = MagicMock()
                 mock_adapter.policy.rate_limit_per_minute = 60
@@ -308,7 +337,9 @@ class TestFullPipelineIntegration:
                 cache_db_path=":memory:",
             )
 
-            candidates, validation_results = await engine.run_full_pipeline(naming_brief)
+            candidates, validation_results = await engine.run_full_pipeline(
+                naming_brief
+            )
 
             # Verify pipeline completed despite partial failures
             assert len(candidates.candidates) == 3
@@ -322,13 +353,21 @@ class TestFullPipelineIntegration:
     @pytest.mark.asyncio
     async def test_cache_integration(self, naming_brief, mock_candidates):
         """Test that cache is properly integrated into the pipeline."""
-        with patch("launch_engine.engine.LLMAdapter") as mock_llm_class, \
-             patch("launch_engine.engine.SQLiteCache") as mock_cache_class, \
-             patch("launch_engine.engine.BrandNamingModule") as mock_bn_class, \
-             patch("launch_engine.engine.ValidationPipeline") as mock_vp_class, \
-             patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain_class, \
-             patch("launch_engine.validation.adapters.trademark.TrademarkAdapter") as mock_trademark_class, \
-             patch("launch_engine.validation.adapters.social.SocialMediaAdapter") as mock_social_class:
+        with (
+            patch("launch_engine.engine.LLMAdapter") as mock_llm_class,
+            patch("launch_engine.engine.SQLiteCache") as mock_cache_class,
+            patch("launch_engine.engine.BrandNamingModule") as mock_bn_class,
+            patch("launch_engine.engine.ValidationPipeline") as mock_vp_class,
+            patch(
+                "launch_engine.validation.adapters.domain.DomainAdapter"
+            ) as mock_domain_class,
+            patch(
+                "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+            ) as mock_trademark_class,
+            patch(
+                "launch_engine.validation.adapters.social.SocialMediaAdapter"
+            ) as mock_social_class,
+        ):
 
             # Setup mocks
             mock_llm = MagicMock()
@@ -370,7 +409,11 @@ class TestFullPipelineIntegration:
             mock_vp.validate_all = AsyncMock(return_value=validation_results)
             mock_vp_class.return_value = mock_vp
 
-            for mock_adapter_class in [mock_domain_class, mock_trademark_class, mock_social_class]:
+            for mock_adapter_class in [
+                mock_domain_class,
+                mock_trademark_class,
+                mock_social_class,
+            ]:
                 mock_adapter = MagicMock()
                 mock_adapter.policy = MagicMock()
                 mock_adapter.policy.rate_limit_per_minute = 60
@@ -391,13 +434,21 @@ class TestFullPipelineIntegration:
     @pytest.mark.asyncio
     async def test_error_recovery_in_pipeline(self, naming_brief):
         """Test that pipeline recovers gracefully from errors."""
-        with patch("launch_engine.engine.LLMAdapter") as mock_llm_class, \
-             patch("launch_engine.engine.SQLiteCache") as mock_cache_class, \
-             patch("launch_engine.engine.BrandNamingModule") as mock_bn_class, \
-             patch("launch_engine.engine.ValidationPipeline") as mock_vp_class, \
-             patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain_class, \
-             patch("launch_engine.validation.adapters.trademark.TrademarkAdapter") as mock_trademark_class, \
-             patch("launch_engine.validation.adapters.social.SocialMediaAdapter") as mock_social_class:
+        with (
+            patch("launch_engine.engine.LLMAdapter") as mock_llm_class,
+            patch("launch_engine.engine.SQLiteCache") as mock_cache_class,
+            patch("launch_engine.engine.BrandNamingModule") as mock_bn_class,
+            patch("launch_engine.engine.ValidationPipeline") as mock_vp_class,
+            patch(
+                "launch_engine.validation.adapters.domain.DomainAdapter"
+            ) as mock_domain_class,
+            patch(
+                "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+            ) as mock_trademark_class,
+            patch(
+                "launch_engine.validation.adapters.social.SocialMediaAdapter"
+            ) as mock_social_class,
+        ):
 
             # Setup mocks
             mock_llm = MagicMock()
@@ -414,7 +465,11 @@ class TestFullPipelineIntegration:
             mock_bn.run = AsyncMock(side_effect=Exception("LLM service unavailable"))
             mock_bn_class.return_value = mock_bn
 
-            for mock_adapter_class in [mock_domain_class, mock_trademark_class, mock_social_class]:
+            for mock_adapter_class in [
+                mock_domain_class,
+                mock_trademark_class,
+                mock_social_class,
+            ]:
                 mock_adapter = MagicMock()
                 mock_adapter.policy = MagicMock()
                 mock_adapter.policy.rate_limit_per_minute = 60
@@ -427,7 +482,9 @@ class TestFullPipelineIntegration:
             )
 
             # Pipeline should handle error gracefully
-            candidates, validation_results = await engine.run_full_pipeline(naming_brief)
+            candidates, validation_results = await engine.run_full_pipeline(
+                naming_brief
+            )
 
             # Should return empty results but not crash
             assert len(candidates.candidates) == 0
@@ -438,15 +495,25 @@ class TestCrossComponentIntegration:
     """Tests for integration between specific components."""
 
     @pytest.mark.asyncio
-    async def test_naming_module_to_validation_pipeline(self, naming_brief, mock_candidates):
+    async def test_naming_module_to_validation_pipeline(
+        self, naming_brief, mock_candidates
+    ):
         """Test data flow from naming module to validation pipeline."""
-        with patch("launch_engine.engine.LLMAdapter") as mock_llm_class, \
-             patch("launch_engine.engine.SQLiteCache") as mock_cache_class, \
-             patch("launch_engine.engine.BrandNamingModule") as mock_bn_class, \
-             patch("launch_engine.engine.ValidationPipeline") as mock_vp_class, \
-             patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain_class, \
-             patch("launch_engine.validation.adapters.trademark.TrademarkAdapter") as mock_trademark_class, \
-             patch("launch_engine.validation.adapters.social.SocialMediaAdapter") as mock_social_class:
+        with (
+            patch("launch_engine.engine.LLMAdapter") as mock_llm_class,
+            patch("launch_engine.engine.SQLiteCache") as mock_cache_class,
+            patch("launch_engine.engine.BrandNamingModule") as mock_bn_class,
+            patch("launch_engine.engine.ValidationPipeline") as mock_vp_class,
+            patch(
+                "launch_engine.validation.adapters.domain.DomainAdapter"
+            ) as mock_domain_class,
+            patch(
+                "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+            ) as mock_trademark_class,
+            patch(
+                "launch_engine.validation.adapters.social.SocialMediaAdapter"
+            ) as mock_social_class,
+        ):
 
             # Setup mocks
             mock_llm = MagicMock()
@@ -473,7 +540,11 @@ class TestCrossComponentIntegration:
             mock_vp.validate_all = AsyncMock(return_value=[])
             mock_vp_class.return_value = mock_vp
 
-            for mock_adapter_class in [mock_domain_class, mock_trademark_class, mock_social_class]:
+            for mock_adapter_class in [
+                mock_domain_class,
+                mock_trademark_class,
+                mock_social_class,
+            ]:
                 mock_adapter = MagicMock()
                 mock_adapter.policy = MagicMock()
                 mock_adapter.policy.rate_limit_per_minute = 60

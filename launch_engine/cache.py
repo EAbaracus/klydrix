@@ -9,28 +9,30 @@ from launch_engine.core.validation import ValidationResult
 
 def _validation_result_to_dict(result: ValidationResult) -> dict:
     """Convert ValidationResult to a JSON-serializable dict.
-    
+
     Converts datetime objects to ISO format strings.
     """
     data = result.model_dump()
     # Convert datetime objects to ISO format strings
-    if isinstance(data.get('checked_at'), datetime):
-        data['checked_at'] = data['checked_at'].isoformat()
-    if isinstance(data.get('evidence', {}).get('checked_at'), datetime):
-        data['evidence']['checked_at'] = data['evidence']['checked_at'].isoformat()
+    if isinstance(data.get("checked_at"), datetime):
+        data["checked_at"] = data["checked_at"].isoformat()
+    if isinstance(data.get("evidence", {}).get("checked_at"), datetime):
+        data["evidence"]["checked_at"] = data["evidence"]["checked_at"].isoformat()
     return data
 
 
 def _dict_to_validation_result(data: dict) -> ValidationResult:
     """Convert a dict to ValidationResult.
-    
+
     Converts ISO format strings back to datetime objects.
     """
     # Convert ISO format strings back to datetime objects
-    if isinstance(data.get('checked_at'), str):
-        data['checked_at'] = datetime.fromisoformat(data['checked_at'])
-    if isinstance(data.get('evidence', {}).get('checked_at'), str):
-        data['evidence']['checked_at'] = datetime.fromisoformat(data['evidence']['checked_at'])
+    if isinstance(data.get("checked_at"), str):
+        data["checked_at"] = datetime.fromisoformat(data["checked_at"])
+    if isinstance(data.get("evidence", {}).get("checked_at"), str):
+        data["evidence"]["checked_at"] = datetime.fromisoformat(
+            data["evidence"]["checked_at"]
+        )
     return ValidationResult(**data)
 
 
@@ -49,8 +51,7 @@ class SQLiteCache:
     async def initialize(self) -> None:
         """Create the cache table if it doesn't exist."""
         self.db = await aiosqlite.connect(self.db_path)
-        await self.db.execute(
-            """
+        await self.db.execute("""
             CREATE TABLE IF NOT EXISTS cache (
                 key TEXT PRIMARY KEY,
                 result_json TEXT NOT NULL,
@@ -59,8 +60,7 @@ class SQLiteCache:
                 context_hash TEXT NOT NULL,
                 created_at INTEGER NOT NULL
             )
-            """
-        )
+            """)
         await self.db.commit()
 
     async def get(self, key: str) -> Optional[ValidationResult]:
@@ -76,8 +76,7 @@ class SQLiteCache:
             await self.initialize()
 
         cursor = await self.db.execute(
-            "SELECT result_json, expires_at FROM cache WHERE key = ?",
-            (key,)
+            "SELECT result_json, expires_at FROM cache WHERE key = ?", (key,)
         )
         row = await cursor.fetchone()
         await cursor.close()

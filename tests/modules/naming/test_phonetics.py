@@ -11,9 +11,7 @@ class TestPhonetics(unittest.TestCase):
     def test_valid_name_passes_all_constraints(self):
         """Test a valid name passes all constraints."""
         constraints = PhoneticConstraints(
-            max_syllables=3,
-            max_length=10,
-            avoid_sounds=["zz", "xx"]
+            max_syllables=3, max_length=10, avoid_sounds=["zz", "xx"]
         )
         name = "hello"  # 2 syllables, length 5, no avoided sounds
         result = check_phonetic_constraints(name, constraints)
@@ -47,9 +45,7 @@ class TestPhonetics(unittest.TestCase):
     def test_notes_explain_validation_failures(self):
         """Test that notes explain why validation failed."""
         constraints = PhoneticConstraints(
-            max_syllables=1,
-            max_length=3,
-            avoid_sounds=["a"]
+            max_syllables=1, max_length=3, avoid_sounds=["a"]
         )
         name = "astra"  # 2 syllables (as-tra), length 5, contains 'a'
         result = check_phonetic_constraints(name, constraints)
@@ -79,7 +75,9 @@ class TestPhonetics(unittest.TestCase):
         self.assertEqual(estimate_syllables("aa"), 1)  # vowel group
         self.assertEqual(estimate_syllables("ae"), 1)  # vowel group
         self.assertEqual(estimate_syllables("aei"), 1)  # vowel group
-        self.assertEqual(estimate_syllables("aeib"), 1)  # aei -> one group, then b -> no new vowel group
+        self.assertEqual(
+            estimate_syllables("aeib"), 1
+        )  # aei -> one group, then b -> no new vowel group
         self.assertEqual(estimate_syllables("coach"), 1)  # coa -> one vowel group
         self.assertEqual(estimate_syllables("boat"), 1)  # oa -> one vowel group
         self.assertEqual(estimate_syllables("create"), 2)  # cre-ate -> two vowel groups

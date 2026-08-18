@@ -11,7 +11,13 @@ import pytest
 from launch_engine.engine import LaunchEngine
 from launch_engine.modules.naming.brief import NamingBrief, NameTypology
 from launch_engine.modules.naming.candidates import NameCandidate, NameCandidateList
-from launch_engine.core.validation import ValidationResult, ValidationStatus, ValidationChannel, Confidence, Evidence
+from launch_engine.core.validation import (
+    ValidationResult,
+    ValidationStatus,
+    ValidationChannel,
+    Confidence,
+    Evidence,
+)
 from launch_engine.validation.adapters.base import ValidationAdapter
 
 
@@ -34,41 +40,47 @@ def naming_brief() -> NamingBrief:
 
 def test_initialization_default_adapters(naming_brief: NamingBrief) -> None:
     """Test LaunchEngine initialization with default adapters."""
-    with patch('launch_engine.engine.LLMAdapter') as mock_llm, \
-         patch('launch_engine.engine.SQLiteCache') as mock_cache, \
-         patch('launch_engine.engine.BrandNamingModule') as mock_bn, \
-         patch('launch_engine.engine.ValidationPipeline') as mock_vp, \
-         patch('launch_engine.validation.adapters.domain.DomainAdapter') as mock_domain, \
-         patch('launch_engine.validation.adapters.trademark.TrademarkAdapter') as mock_trademark, \
-         patch('launch_engine.validation.adapters.social.SocialMediaAdapter') as mock_social:
+    with (
+        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.SQLiteCache") as mock_cache,
+        patch("launch_engine.engine.BrandNamingModule") as mock_bn,
+        patch("launch_engine.engine.ValidationPipeline") as mock_vp,
+        patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain,
+        patch(
+            "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+        ) as mock_trademark,
+        patch(
+            "launch_engine.validation.adapters.social.SocialMediaAdapter"
+        ) as mock_social,
+    ):
 
         # Configure mocks
         mock_llm_instance = MagicMock()
         mock_llm_instance.provider = "ollama"
         mock_llm_instance.model_id = "ollama/test_model"
         mock_llm.return_value = mock_llm_instance
-        
+
         mock_cache_instance = MagicMock()
         mock_cache.return_value = mock_cache_instance
-        
+
         mock_bn_instance = MagicMock()
         mock_bn.return_value = mock_bn_instance
-        
+
         mock_vp_instance = MagicMock()
         mock_vp.return_value = mock_vp_instance
-        
+
         # Set up domain adapter mock
         mock_domain_instance = MagicMock()
         mock_domain_instance.policy = MagicMock()
         mock_domain_instance.policy.rate_limit_per_minute = 60
         mock_domain.return_value = mock_domain_instance
-        
+
         # Set up trademark adapter mock
         mock_trademark_instance = MagicMock()
         mock_trademark_instance.policy = MagicMock()
         mock_trademark_instance.policy.rate_limit_per_minute = 10
         mock_trademark.return_value = mock_trademark_instance
-        
+
         # Set up social adapter mock
         mock_social_instance = MagicMock()
         mock_social_instance.policy = MagicMock()
@@ -93,7 +105,9 @@ def test_initialization_default_adapters(naming_brief: NamingBrief) -> None:
         mock_bn.assert_called_once_with(llm_adapter=mock_llm_instance)
         mock_vp.assert_called_once()
         args, kwargs = mock_vp.call_args
-        adapters_arg = kwargs.get('adapters') or args[0] if args else kwargs.get('adapters')
+        adapters_arg = (
+            kwargs.get("adapters") or args[0] if args else kwargs.get("adapters")
+        )
         assert len(adapters_arg) == 3
         # Check that the adapters are the ones we created (order: domain, trademark, social)
         assert adapters_arg[0] == mock_domain_instance
@@ -111,10 +125,12 @@ def test_initialization_custom_adapters(naming_brief: NamingBrief) -> None:
         adapter.policy.rate_limit_per_minute = 60
         custom_adapters.append(adapter)
 
-    with patch('launch_engine.engine.LLMAdapter'), \
-         patch('launch_engine.engine.SQLiteCache'), \
-         patch('launch_engine.engine.BrandNamingModule'), \
-         patch('launch_engine.engine.ValidationPipeline'):
+    with (
+        patch("launch_engine.engine.LLMAdapter"),
+        patch("launch_engine.engine.SQLiteCache"),
+        patch("launch_engine.engine.BrandNamingModule"),
+        patch("launch_engine.engine.ValidationPipeline"),
+    ):
 
         engine = LaunchEngine(
             llm_provider="ollama",
@@ -129,7 +145,14 @@ def test_initialization_custom_adapters(naming_brief: NamingBrief) -> None:
 @pytest.mark.asyncio
 async def test_generate_names_success(naming_brief: NamingBrief) -> None:
     """Test successful name generation."""
-    mock_candidates = [NameCandidate(candidate_id="test_cand", name="Test", typology=NameTypology.INVENTED, rationale="Test")]
+    mock_candidates = [
+        NameCandidate(
+            candidate_id="test_cand",
+            name="Test",
+            typology=NameTypology.INVENTED,
+            rationale="Test",
+        )
+    ]
     mock_candidate_list = NameCandidateList(
         brief_ref="test_project",
         candidates=mock_candidates,
@@ -138,25 +161,31 @@ async def test_generate_names_success(naming_brief: NamingBrief) -> None:
         generated_at=datetime.now(),
     )
 
-    with patch('launch_engine.engine.LLMAdapter') as mock_llm, \
-         patch('launch_engine.engine.SQLiteCache'), \
-         patch('launch_engine.engine.BrandNamingModule') as mock_bn, \
-         patch('launch_engine.engine.ValidationPipeline'), \
-         patch('launch_engine.validation.adapters.domain.DomainAdapter') as mock_domain, \
-         patch('launch_engine.validation.adapters.trademark.TrademarkAdapter') as mock_trademark, \
-         patch('launch_engine.validation.adapters.social.SocialMediaAdapter') as mock_social:
+    with (
+        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.SQLiteCache"),
+        patch("launch_engine.engine.BrandNamingModule") as mock_bn,
+        patch("launch_engine.engine.ValidationPipeline"),
+        patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain,
+        patch(
+            "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+        ) as mock_trademark,
+        patch(
+            "launch_engine.validation.adapters.social.SocialMediaAdapter"
+        ) as mock_social,
+    ):
 
         # Set up adapter mocks with policy
         mock_domain_instance = MagicMock()
         mock_domain_instance.policy = MagicMock()
         mock_domain_instance.policy.rate_limit_per_minute = 60
         mock_domain.return_value = mock_domain_instance
-        
+
         mock_trademark_instance = MagicMock()
         mock_trademark_instance.policy = MagicMock()
         mock_trademark_instance.policy.rate_limit_per_minute = 10
         mock_trademark.return_value = mock_trademark_instance
-        
+
         mock_social_instance = MagicMock()
         mock_social_instance.policy = MagicMock()
         mock_social_instance.policy.rate_limit_per_minute = 30
@@ -188,25 +217,31 @@ async def test_generate_names_success(naming_brief: NamingBrief) -> None:
 @pytest.mark.asyncio
 async def test_generate_names_error(naming_brief: NamingBrief) -> None:
     """Test name generation error handling."""
-    with patch('launch_engine.engine.LLMAdapter') as mock_llm, \
-         patch('launch_engine.engine.SQLiteCache'), \
-         patch('launch_engine.engine.BrandNamingModule') as mock_bn, \
-         patch('launch_engine.engine.ValidationPipeline'), \
-         patch('launch_engine.validation.adapters.domain.DomainAdapter') as mock_domain, \
-         patch('launch_engine.validation.adapters.trademark.TrademarkAdapter') as mock_trademark, \
-         patch('launch_engine.validation.adapters.social.SocialMediaAdapter') as mock_social:
+    with (
+        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.SQLiteCache"),
+        patch("launch_engine.engine.BrandNamingModule") as mock_bn,
+        patch("launch_engine.engine.ValidationPipeline"),
+        patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain,
+        patch(
+            "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+        ) as mock_trademark,
+        patch(
+            "launch_engine.validation.adapters.social.SocialMediaAdapter"
+        ) as mock_social,
+    ):
 
         # Set up adapter mocks with policy
         mock_domain_instance = MagicMock()
         mock_domain_instance.policy = MagicMock()
         mock_domain_instance.policy.rate_limit_per_minute = 60
         mock_domain.return_value = mock_domain_instance
-        
+
         mock_trademark_instance = MagicMock()
         mock_trademark_instance.policy = MagicMock()
         mock_trademark_instance.policy.rate_limit_per_minute = 10
         mock_trademark.return_value = mock_trademark_instance
-        
+
         mock_social_instance = MagicMock()
         mock_social_instance.policy = MagicMock()
         mock_social_instance.policy.rate_limit_per_minute = 30
@@ -242,7 +277,14 @@ async def test_generate_names_error(naming_brief: NamingBrief) -> None:
 @pytest.mark.asyncio
 async def test_validate_names_success(naming_brief: NamingBrief) -> None:
     """Test successful validation."""
-    mock_candidates = [NameCandidate(candidate_id="test_cand", name="Test", typology=NameTypology.INVENTED, rationale="Test")]
+    mock_candidates = [
+        NameCandidate(
+            candidate_id="test_cand",
+            name="Test",
+            typology=NameTypology.INVENTED,
+            rationale="Test",
+        )
+    ]
     mock_validation_results = [
         ValidationResult(
             target="Test",
@@ -276,28 +318,34 @@ async def test_validate_names_success(naming_brief: NamingBrief) -> None:
             validation_id="test_validation_social",
             adapter_version="1.0",
             checked_at=datetime.now(),
-        )
+        ),
     ]
 
-    with patch('launch_engine.engine.LLMAdapter') as mock_llm, \
-         patch('launch_engine.engine.SQLiteCache'), \
-         patch('launch_engine.engine.BrandNamingModule'), \
-         patch('launch_engine.engine.ValidationPipeline') as mock_vp, \
-         patch('launch_engine.validation.adapters.domain.DomainAdapter') as mock_domain, \
-         patch('launch_engine.validation.adapters.trademark.TrademarkAdapter') as mock_trademark, \
-         patch('launch_engine.validation.adapters.social.SocialMediaAdapter') as mock_social:
+    with (
+        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.SQLiteCache"),
+        patch("launch_engine.engine.BrandNamingModule"),
+        patch("launch_engine.engine.ValidationPipeline") as mock_vp,
+        patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain,
+        patch(
+            "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+        ) as mock_trademark,
+        patch(
+            "launch_engine.validation.adapters.social.SocialMediaAdapter"
+        ) as mock_social,
+    ):
 
         # Set up adapter mocks with policy
         mock_domain_instance = MagicMock()
         mock_domain_instance.policy = MagicMock()
         mock_domain_instance.policy.rate_limit_per_minute = 60
         mock_domain.return_value = mock_domain_instance
-        
+
         mock_trademark_instance = MagicMock()
         mock_trademark_instance.policy = MagicMock()
         mock_trademark_instance.policy.rate_limit_per_minute = 10
         mock_trademark.return_value = mock_trademark_instance
-        
+
         mock_social_instance = MagicMock()
         mock_social_instance.policy = MagicMock()
         mock_social_instance.policy.rate_limit_per_minute = 30
@@ -317,33 +365,48 @@ async def test_validate_names_success(naming_brief: NamingBrief) -> None:
         result = await engine.validate_names(mock_candidates, naming_brief)
 
         assert result == mock_validation_results
-        mock_vp_instance.validate_all.assert_called_once_with(mock_candidates, naming_brief)
+        mock_vp_instance.validate_all.assert_called_once_with(
+            mock_candidates, naming_brief
+        )
 
 
 @pytest.mark.asyncio
 async def test_validate_names_error(naming_brief: NamingBrief) -> None:
     """Test validation error handling."""
-    mock_candidates = [NameCandidate(candidate_id="test_cand", name="Test", typology=NameTypology.INVENTED, rationale="Test")]
+    mock_candidates = [
+        NameCandidate(
+            candidate_id="test_cand",
+            name="Test",
+            typology=NameTypology.INVENTED,
+            rationale="Test",
+        )
+    ]
 
-    with patch('launch_engine.engine.LLMAdapter') as mock_llm, \
-         patch('launch_engine.engine.SQLiteCache'), \
-         patch('launch_engine.engine.BrandNamingModule'), \
-         patch('launch_engine.engine.ValidationPipeline') as mock_vp, \
-         patch('launch_engine.validation.adapters.domain.DomainAdapter') as mock_domain, \
-         patch('launch_engine.validation.adapters.trademark.TrademarkAdapter') as mock_trademark, \
-         patch('launch_engine.validation.adapters.social.SocialMediaAdapter') as mock_social:
+    with (
+        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.SQLiteCache"),
+        patch("launch_engine.engine.BrandNamingModule"),
+        patch("launch_engine.engine.ValidationPipeline") as mock_vp,
+        patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain,
+        patch(
+            "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+        ) as mock_trademark,
+        patch(
+            "launch_engine.validation.adapters.social.SocialMediaAdapter"
+        ) as mock_social,
+    ):
 
         # Set up adapter mocks with policy
         mock_domain_instance = MagicMock()
         mock_domain_instance.policy = MagicMock()
         mock_domain_instance.policy.rate_limit_per_minute = 60
         mock_domain.return_value = mock_domain_instance
-        
+
         mock_trademark_instance = MagicMock()
         mock_trademark_instance.policy = MagicMock()
         mock_trademark_instance.policy.rate_limit_per_minute = 10
         mock_trademark.return_value = mock_trademark_instance
-        
+
         mock_social_instance = MagicMock()
         mock_social_instance.policy = MagicMock()
         mock_social_instance.policy.rate_limit_per_minute = 30
@@ -373,7 +436,14 @@ async def test_validate_names_error(naming_brief: NamingBrief) -> None:
 @pytest.mark.asyncio
 async def test_run_full_pipeline(naming_brief: NamingBrief) -> None:
     """Test the full pipeline execution."""
-    mock_candidates = [NameCandidate(candidate_id="test_cand", name="Test", typology=NameTypology.INVENTED, rationale="Test")]
+    mock_candidates = [
+        NameCandidate(
+            candidate_id="test_cand",
+            name="Test",
+            typology=NameTypology.INVENTED,
+            rationale="Test",
+        )
+    ]
     mock_candidate_list = NameCandidateList(
         brief_ref="test_project",
         candidates=mock_candidates,
@@ -414,28 +484,34 @@ async def test_run_full_pipeline(naming_brief: NamingBrief) -> None:
             validation_id="test_validation_social",
             adapter_version="1.0",
             checked_at=datetime.now(),
-        )
+        ),
     ]
 
-    with patch('launch_engine.engine.LLMAdapter') as mock_llm, \
-         patch('launch_engine.engine.SQLiteCache'), \
-         patch('launch_engine.engine.BrandNamingModule') as mock_bn, \
-         patch('launch_engine.engine.ValidationPipeline') as mock_vp, \
-         patch('launch_engine.validation.adapters.domain.DomainAdapter') as mock_domain, \
-         patch('launch_engine.validation.adapters.trademark.TrademarkAdapter') as mock_trademark, \
-         patch('launch_engine.validation.adapters.social.SocialMediaAdapter') as mock_social:
+    with (
+        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.SQLiteCache"),
+        patch("launch_engine.engine.BrandNamingModule") as mock_bn,
+        patch("launch_engine.engine.ValidationPipeline") as mock_vp,
+        patch("launch_engine.validation.adapters.domain.DomainAdapter") as mock_domain,
+        patch(
+            "launch_engine.validation.adapters.trademark.TrademarkAdapter"
+        ) as mock_trademark,
+        patch(
+            "launch_engine.validation.adapters.social.SocialMediaAdapter"
+        ) as mock_social,
+    ):
 
         # Set up adapter mocks with policy
         mock_domain_instance = MagicMock()
         mock_domain_instance.policy = MagicMock()
         mock_domain_instance.policy.rate_limit_per_minute = 60
         mock_domain.return_value = mock_domain_instance
-        
+
         mock_trademark_instance = MagicMock()
         mock_trademark_instance.policy = MagicMock()
         mock_trademark_instance.policy.rate_limit_per_minute = 10
         mock_trademark.return_value = mock_trademark_instance
-        
+
         mock_social_instance = MagicMock()
         mock_social_instance.policy = MagicMock()
         mock_social_instance.policy.rate_limit_per_minute = 30
@@ -468,7 +544,9 @@ async def test_run_full_pipeline(naming_brief: NamingBrief) -> None:
         assert candidates == mock_candidate_list
         assert validation_results == mock_validation_results
         mock_bn_instance.run.assert_called_once_with(naming_brief)
-        mock_vp_instance.validate_all.assert_called_once_with(mock_candidates, naming_brief)
+        mock_vp_instance.validate_all.assert_called_once_with(
+            mock_candidates, naming_brief
+        )
 
 
 if __name__ == "__main__":

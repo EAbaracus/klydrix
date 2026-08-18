@@ -1,20 +1,24 @@
 """Core contracts for Launch Engine."""
+
 from pydantic import BaseModel
 from typing import Protocol
 
 
 class BaseModuleInput(BaseModel):
     """Base input for all modules."""
+
     pass
 
 
 class BaseModuleOutput(BaseModel):
     """Base output for all modules."""
+
     pass
 
 
 class LaunchModule(Protocol):
     """Protocol for launch modules."""
+
     name: str
 
     async def run(self, input_data: BaseModuleInput) -> BaseModuleOutput:

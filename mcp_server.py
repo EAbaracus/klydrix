@@ -12,6 +12,7 @@ Tools:
   - run_full_pipeline(brief_json) -> {candidates, results} JSON
   - list_adapters() -> adapter metadata JSON
 """
+
 from __future__ import annotations
 
 import asyncio

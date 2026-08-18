@@ -7,6 +7,9 @@ name = "klydrix"
 version = "0.1.0"
 description = "KLYDRIX — AI brand-naming and validation engine (generate, score, and clear names across domain, trademark, and social channels)"
 authors = [{name = "Hermes Agent"}]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "Apache-2.0"}
 dependencies = [
     "pydantic>=2.0",
     "litellm>=1.0",

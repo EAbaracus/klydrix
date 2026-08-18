@@ -1,4 +1,5 @@
 """Validation models and enums for Launch Engine."""
+
 from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
@@ -8,6 +9,7 @@ from pydantic import BaseModel
 
 class ValidationStatus(str, Enum):
     """Validation status."""
+
     AVAILABLE = "available"
     TAKEN = "taken"
     UNVERIFIABLE = "unverifiable"
@@ -16,6 +18,7 @@ class ValidationStatus(str, Enum):
 
 class Confidence(str, Enum):
     """Confidence level."""
+
     CONFIRMED = "confirmed"
     LIKELY = "likely"
     UNKNOWN = "unknown"
@@ -23,6 +26,7 @@ class Confidence(str, Enum):
 
 class ValidationChannel(str, Enum):
     """Validation channel."""
+
     DOMAIN = "domain"
     TRADEMARK_TR = "trademark_tr"
     TRADEMARK_GLOBAL = "trademark_global"
@@ -33,6 +37,7 @@ class ValidationChannel(str, Enum):
 
 class Evidence(BaseModel):
     """Evidence for a validation."""
+
     source: str
     url: Optional[str] = None
     checked_at: datetime
@@ -41,6 +46,7 @@ class Evidence(BaseModel):
 
 class ValidationResult(BaseModel):
     """Result of a validation check."""
+
     target: str
     channel: ValidationChannel
     status: ValidationStatus
@@ -55,6 +61,7 @@ class ValidationResult(BaseModel):
 
 class CacheEntry(BaseModel):
     """Cache entry for validation results."""
+
     key: str
     result: ValidationResult
     expires_at: datetime

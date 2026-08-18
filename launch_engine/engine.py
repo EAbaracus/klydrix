@@ -55,6 +55,7 @@ class LaunchEngine:
             from launch_engine.validation.adapters.domain import DomainAdapter
             from launch_engine.validation.adapters.trademark import TrademarkAdapter
             from launch_engine.validation.adapters.social import SocialMediaAdapter
+
             self.adapters = [
                 DomainAdapter(),
                 TrademarkAdapter(),
@@ -64,9 +65,7 @@ class LaunchEngine:
             self.adapters = adapters
 
         # Initialize brand naming module
-        self.brand_naming_module = BrandNamingModule(
-            llm_adapter=self.llm_adapter
-        )
+        self.brand_naming_module = BrandNamingModule(llm_adapter=self.llm_adapter)
 
         # Initialize validation pipeline
         self.validation_pipeline = ValidationPipeline(

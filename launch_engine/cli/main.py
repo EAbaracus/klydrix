@@ -1,4 +1,5 @@
 """CLI interface for Launch Engine."""
+
 import asyncio
 import json
 import sys
@@ -13,6 +14,9 @@ from launch_engine.engine import LaunchEngine
 from launch_engine.modules.naming.brief import NamingBrief, PhoneticConstraints
 from launch_engine.modules.naming.candidates import NameCandidateList
 from launch_engine.core.validation import ValidationResult
+from launch_engine.runtime_config import ensure_9router_env
+
+ensure_9router_env()
 
 app = typer.Typer(help="KLYDRIX - Brand naming and validation CLI")
 console = Console()
@@ -22,17 +26,32 @@ console = Console()
 def generate_names(
     project_codename: str = typer.Option(..., help="Project codename"),
     description: str = typer.Option(..., help="Project description"),
-    target_markets: str = typer.Option(..., help="Comma-separated target markets (e.g., 'USA,Europe')"),
+    target_markets: str = typer.Option(
+        ..., help="Comma-separated target markets (e.g., 'USA,Europe')"
+    ),
     industry: str = typer.Option(..., help="Industry (e.g., 'Technology')"),
-    brand_personality: Optional[str] = typer.Option(None, help="Brand personality traits"),
-    avoid_terms: Optional[str] = typer.Option(None, help="Comma-separated terms to avoid"),
+    brand_personality: Optional[str] = typer.Option(
+        None, help="Brand personality traits"
+    ),
+    avoid_terms: Optional[str] = typer.Option(
+        None, help="Comma-separated terms to avoid"
+    ),
     candidate_count: int = typer.Option(10, help="Number of candidates to generate"),
-    llm_provider: str = typer.Option("ollama", help="LLM provider (ollama, openai, anthropic)"),
-    llm_model: str = typer.Option("qwen3:14b", help="LLM model name"),
+    llm_provider: Optional[str] = typer.Option(
+        None, help="LLM provider (9router, openai, anthropic)", prompt="LLM provider"
+    ),
+    llm_model: Optional[str] = typer.Option(
+        None, help="LLM model name", prompt="LLM model"
+    ),
     cache_db: str = typer.Option("launch_engine_cache.db", help="Cache database path"),
     output_format: str = typer.Option("table", help="Output format: table, json, csv"),
 ):
     """Generate brand name candidates based on a naming brief."""
+    # Apply defaults if not prompted/provided
+    if llm_provider is None:
+        llm_provider = "9router"
+    if llm_model is None:
+        llm_model = "kc/nvidia/nemotron-3-super-120b-a12b:free"
     try:
         # Parse comma-separated values
         markets = [m.strip() for m in target_markets.split(",")]
@@ -77,12 +96,21 @@ def validate(
     candidates_file: str = typer.Option(..., help="Path to JSON file with candidates"),
     target_markets: str = typer.Option(..., help="Comma-separated target markets"),
     industry: str = typer.Option(..., help="Industry"),
-    llm_provider: str = typer.Option("ollama", help="LLM provider"),
-    llm_model: str = typer.Option("qwen3:14b", help="LLM model name"),
+    llm_provider: Optional[str] = typer.Option(
+        None, help="LLM provider", prompt="LLM provider"
+    ),
+    llm_model: Optional[str] = typer.Option(
+        None, help="LLM model name", prompt="LLM model"
+    ),
     cache_db: str = typer.Option("launch_engine_cache.db", help="Cache database path"),
     output_format: str = typer.Option("table", help="Output format: table, json, csv"),
 ):
     """Validate brand name candidates."""
+    # Apply defaults if not prompted/provided
+    if llm_provider is None:
+        llm_provider = "9router"
+    if llm_model is None:
+        llm_model = "kc/nvidia/nemotron-3-super-120b-a12b:free"
     try:
         # Load candidates from file
         candidates_path = Path(candidates_file)
@@ -219,25 +247,35 @@ def _output_table(result: NameCandidateList):
             str(i),
             candidate.name,
             candidate.typology.value,
-            candidate.rationale[:50] + "..." if len(candidate.rationale) > 50 else candidate.rationale,
+            (
+                candidate.rationale[:50] + "..."
+                if len(candidate.rationale) > 50
+                else candidate.rationale
+            ),
             str(score),
         )
 
     console.print(table)
-    console.print(f"\n[dim]Generated {len(result.candidates)} candidates using {result.llm_provider}/{result.llm_model_used}[/dim]")
+    console.print(
+        f"\n[dim]Generated {len(result.candidates)} candidates using {result.llm_provider}/{result.llm_model_used}[/dim]"
+    )
 
 
 def _output_csv(result: NameCandidateList):
     """Output candidates as CSV."""
     console.print("name,typology,rationale,score")
     for candidate in result.candidates:
-        score = candidate.internal_assessment.score if candidate.internal_assessment else ""
+        score = (
+            candidate.internal_assessment.score if candidate.internal_assessment else ""
+        )
         if isinstance(score, float):
             score = f"{score:.2f}"
 
         # Escape CSV fields
         rationale = candidate.rationale.replace('"', '""')
-        console.print(f'"{candidate.name}","{candidate.typology.value}","{rationale}","{score}"')
+        console.print(
+            f'"{candidate.name}","{candidate.typology.value}","{rationale}","{score}"'
+        )
 
 
 def _output_validation_table(results: list[ValidationResult]):
@@ -274,7 +312,9 @@ def _output_validation_csv(results: list[ValidationResult]):
     console.print("target,channel,status,confidence,manual_review_url")
     for result in results:
         manual_url = result.manual_review_url or ""
-        console.print(f'"{result.target}","{result.channel.value}","{result.status.value}","{result.confidence.value}","{manual_url}"')
+        console.print(
+            f'"{result.target}","{result.channel.value}","{result.status.value}","{result.confidence.value}","{manual_url}"'
+        )
 
 
 if __name__ == "__main__":

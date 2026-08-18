@@ -13,6 +13,7 @@ def test_base_module_input_is_pydantic_model():
 
 def test_base_module_input_can_be_subclassed():
     """Test that we can subclass BaseModuleInput and add fields."""
+
     class TestInput(BaseModuleInput):
         name: str
         age: int
@@ -24,6 +25,7 @@ def test_base_module_input_can_be_subclassed():
 
 def test_base_module_input_validates_types():
     """Test that BaseModuleInput validates types correctly."""
+
     class TestInput(BaseModuleInput):
         age: int
 
@@ -50,8 +52,8 @@ def test_launch_module_protocol():
             return input_data
 
     # Check that DummyModule has the attributes
-    assert hasattr(DummyModule, 'name')
-    assert hasattr(DummyModule, 'run')
+    assert hasattr(DummyModule, "name")
+    assert hasattr(DummyModule, "run")
     # Check that name is a string (we set it to a string)
     assert isinstance(DummyModule.name, str)
     # Check that run is callable
@@ -59,4 +61,5 @@ def test_launch_module_protocol():
 
     # Additionally, we can check that LaunchModule is indeed a Protocol by checking its type
     from typing import Protocol
+
     assert isinstance(LaunchModule, type(Protocol))

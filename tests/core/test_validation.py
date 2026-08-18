@@ -40,7 +40,9 @@ def test_validation_channel_enum():
 def test_evidence_model():
     """Test Evidence model."""
     now = datetime.now(timezone.utc)
-    evidence = Evidence(source="test", url="http://example.com", checked_at=now, raw={"key": "value"})
+    evidence = Evidence(
+        source="test", url="http://example.com", checked_at=now, raw={"key": "value"}
+    )
     assert evidence.source == "test"
     assert evidence.url == "http://example.com"
     assert evidence.checked_at == now

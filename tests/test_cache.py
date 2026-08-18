@@ -31,13 +31,13 @@ def sample_validation_result() -> ValidationResult:
             source="test-source",
             url="https://example.com",
             checked_at=now,
-            raw={"key": "value"}
+            raw={"key": "value"},
         ),
         candidate_id="test-candidate-id",
         validation_id="test-validation-id",
         adapter_version="1.0.0",
         checked_at=now,
-        manual_review_url="https://review.example.com"
+        manual_review_url="https://review.example.com",
     )
 
 
@@ -106,9 +106,7 @@ async def test_set_and_get_operations(
 
 
 @pytest.mark.asyncio
-async def test_ttl_expiration(
-    db_path: str, sample_validation_result: ValidationResult
-):
+async def test_ttl_expiration(db_path: str, sample_validation_result: ValidationResult):
     """Test that cache entries expire after TTL."""
     cache = SQLiteCache(db_path)
     await cache.initialize()
@@ -198,9 +196,7 @@ async def test_version_tracking(
 
         # Directly query the database to check version
         async with aiosqlite.connect(db_path) as db:
-            cursor = await db.execute(
-                "SELECT version FROM cache WHERE key = ?", (key,)
-            )
+            cursor = await db.execute("SELECT version FROM cache WHERE key = ?", (key,))
             row = await cursor.fetchone()
             await cursor.close()
             assert row is not None

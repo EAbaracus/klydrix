@@ -1,6 +1,7 @@
 """
 Tests for the LLMAdapter class.
 """
+
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -62,7 +63,12 @@ async def test_generate_llm_api_error():
     # Mock litellm.acompletion to raise an APIError
     with patch(
         "litellm.acompletion",
-        side_effect=APIError(status_code=500, message="API error", llm_provider="openai", model="gpt-3.5-turbo"),
+        side_effect=APIError(
+            status_code=500,
+            message="API error",
+            llm_provider="openai",
+            model="gpt-3.5-turbo",
+        ),
     ) as mock_acompletion:
         with pytest.raises(RuntimeError, match="LLM API call failed"):
             await adapter.generate("Hello")

@@ -1,5 +1,9 @@
 import pytest
-from launch_engine.modules.naming.candidates import InternalAssessment, NameCandidate, NameCandidateList
+from launch_engine.modules.naming.candidates import (
+    InternalAssessment,
+    NameCandidate,
+    NameCandidateList,
+)
 from launch_engine.modules.naming.brief import NameTypology
 from datetime import datetime, timezone
 
@@ -18,7 +22,7 @@ def test_name_candidate_required_fields():
         candidate_id="1",
         name="TestName",
         typology=NameTypology.INVENTED,
-        rationale="A great invented name"
+        rationale="A great invented name",
     )
     assert candidate.candidate_id == "1"
     assert candidate.name == "TestName"
@@ -41,7 +45,7 @@ def test_name_candidate_all_fields():
         phonetic_notes="Easy to pronounce",
         tagline_options=["Just do it", "Do it"],
         brand_story_seed="A story about success",
-        internal_assessment=assessment
+        internal_assessment=assessment,
     )
     assert candidate.candidate_id == "2"
     assert candidate.name == "AwesomeName"
@@ -59,14 +63,14 @@ def test_name_candidate_list():
         candidate_id="1",
         name="TestName",
         typology=NameTypology.INVENTED,
-        rationale="A great invented name"
+        rationale="A great invented name",
     )
     candidate_list = NameCandidateList(
         brief_ref="brief_123",
         candidates=[candidate],
         llm_model_used="gpt-4",
         llm_provider="openai",
-        generated_at=datetime.now(timezone.utc)
+        generated_at=datetime.now(timezone.utc),
     )
     assert candidate_list.brief_ref == "brief_123"
     assert len(candidate_list.candidates) == 1
@@ -87,5 +91,5 @@ def test_candidate_id_required():
             # candidate_id missing
             name="TestName",
             typology=NameTypology.INVENTED,
-            rationale="A great invented name"
+            rationale="A great invented name",
         )

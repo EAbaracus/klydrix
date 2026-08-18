@@ -7,6 +7,7 @@ from typing import Optional, List
 @dataclass
 class PhoneticConstraints:
     """Constraints for phonetic validation."""
+
     max_syllables: Optional[int] = None
     max_length: Optional[int] = None
     avoid_sounds: Optional[List[str]] = None
@@ -15,6 +16,7 @@ class PhoneticConstraints:
 @dataclass
 class PhoneticAssessment:
     """Result of phonetic validation."""
+
     is_valid: bool
     notes: Optional[str] = None
 
@@ -38,13 +40,17 @@ def estimate_syllables(name: str) -> int:
     return max(1, count)  # At least one syllable if name is not empty
 
 
-def check_phonetic_constraints(name: str, constraints: PhoneticConstraints) -> PhoneticAssessment:
+def check_phonetic_constraints(
+    name: str, constraints: PhoneticConstraints
+) -> PhoneticAssessment:
     """Validate name against phonetic constraints."""
     notes = []
 
     # Check max_length
     if constraints.max_length is not None and len(name) > constraints.max_length:
-        notes.append(f"Name length {len(name)} exceeds maximum {constraints.max_length}")
+        notes.append(
+            f"Name length {len(name)} exceeds maximum {constraints.max_length}"
+        )
 
     # Check max_syllables
     if constraints.max_syllables is not None:

@@ -1,4 +1,5 @@
 """Tests for CLI interface."""
+
 import json
 from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
@@ -21,7 +22,6 @@ from launch_engine.core.validation import (
     Evidence,
 )
 from datetime import datetime, timezone
-
 
 runner = CliRunner()
 
@@ -192,7 +192,9 @@ def test_generate_names_csv_output(sample_candidate_list):
         assert "INVENTED" in result.stdout
 
 
-def test_validate_table_output(sample_candidate_list, sample_validation_results, tmp_path):
+def test_validate_table_output(
+    sample_candidate_list, sample_validation_results, tmp_path
+):
     """Test validate command with table output."""
     # Create temporary candidates file
     candidates_file = tmp_path / "candidates.json"
@@ -225,7 +227,9 @@ def test_validate_table_output(sample_candidate_list, sample_validation_results,
         mock_engine.validate_names.assert_called_once()
 
 
-def test_validate_json_output(sample_candidate_list, sample_validation_results, tmp_path):
+def test_validate_json_output(
+    sample_candidate_list, sample_validation_results, tmp_path
+):
     """Test validate command with JSON output."""
     # Create temporary candidates file
     candidates_file = tmp_path / "candidates.json"
@@ -259,7 +263,9 @@ def test_validate_json_output(sample_candidate_list, sample_validation_results, 
         assert output_data[0]["status"] == "available"
 
 
-def test_validate_csv_output(sample_candidate_list, sample_validation_results, tmp_path):
+def test_validate_csv_output(
+    sample_candidate_list, sample_validation_results, tmp_path
+):
     """Test validate command with CSV output."""
     # Create temporary candidates file
     candidates_file = tmp_path / "candidates.json"
