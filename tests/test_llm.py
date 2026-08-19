@@ -16,7 +16,7 @@ from launch_engine.llm import LLMAdapter
         ("ollama", "qwen3:14b", "ollama/qwen3:14b"),
         ("openai", "gpt-3.5-turbo", "openai/gpt-3.5-turbo"),
         ("anthropic", "claude-2", "anthropic/claude-2"),
-        ("9router", "some-model", "some-model"),
+        ("9router", "some-model", "openai/some-model"),
     ],
 )
 def test_initialization(provider, model, expected_model_id):

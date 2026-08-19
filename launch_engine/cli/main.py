@@ -15,11 +15,40 @@ from launch_engine.modules.naming.brief import NamingBrief, PhoneticConstraints
 from launch_engine.modules.naming.candidates import NameCandidateList
 from launch_engine.core.validation import ValidationResult
 from launch_engine.runtime_config import ensure_9router_env
+from launch_engine import models as model_catalog
+from launch_engine.config import OnomlyConfig, load_config, save_config, config_path
+from launch_engine.models import ModelEntry
 
 ensure_9router_env()
 
 app = typer.Typer(help="Onomly - Brand naming and validation CLI")
 console = Console()
+
+
+def _resolve_llm(provider: str | None, model: str | None) -> tuple[str, str]:
+    """Resolve provider/model from CLI overrides or saved config.
+
+    Precedence: explicit CLI flag > saved config > catalog default.
+    """
+    cfg = load_config()
+    prov = provider or cfg.llm_provider
+    mod = model or cfg.llm_model
+    return prov, mod
+
+
+def _print_first_run_hint(output_format: str) -> None:
+    """Warn about the default model on first run, but only for human-readable
+    output so it never corrupts json/csv streams."""
+    if output_format != "table":
+        return
+    cfg = load_config()
+    if not cfg.configured:
+        console.print(
+            "[yellow]No model configured yet.[/yellow] "
+            "Using default: [cyan]"
+            f"{cfg.model_id}"
+            "[/cyan]. Run [bold]onomly configure[/bold] to pick a model."
+        )
 
 
 @app.command()
@@ -37,21 +66,18 @@ def generate_names(
         None, help="Comma-separated terms to avoid"
     ),
     candidate_count: int = typer.Option(10, help="Number of candidates to generate"),
-    llm_provider: Optional[str] = typer.Option(
-        None, help="LLM provider (9router, openai, anthropic)", prompt="LLM provider"
+    llm_provider: str = typer.Option(
+        None, help="LLM provider (9router, openai, anthropic, ollama). Default: saved config or 9router."
     ),
-    llm_model: Optional[str] = typer.Option(
-        None, help="LLM model name", prompt="LLM model"
+    llm_model: str = typer.Option(
+        None, help="LLM model name. Default: saved config or 9router free model."
     ),
     cache_db: str = typer.Option("launch_engine_cache.db", help="Cache database path"),
     output_format: str = typer.Option("table", help="Output format: table, json, csv"),
 ):
     """Generate brand name candidates based on a naming brief."""
-    # Apply defaults if not prompted/provided
-    if llm_provider is None:
-        llm_provider = "9router"
-    if llm_model is None:
-        llm_model = "kc/nvidia/nemotron-3-super-120b-a12b:free"
+    llm_provider, llm_model = _resolve_llm(llm_provider, llm_model)
+    _print_first_run_hint(output_format)
     try:
         # Parse comma-separated values
         markets = [m.strip() for m in target_markets.split(",")]
@@ -96,21 +122,18 @@ def validate(
     candidates_file: str = typer.Option(..., help="Path to JSON file with candidates"),
     target_markets: str = typer.Option(..., help="Comma-separated target markets"),
     industry: str = typer.Option(..., help="Industry"),
-    llm_provider: Optional[str] = typer.Option(
-        None, help="LLM provider", prompt="LLM provider"
+    llm_provider: str = typer.Option(
+        None, help="LLM provider (9router, openai, anthropic, ollama). Default: saved config or 9router."
     ),
-    llm_model: Optional[str] = typer.Option(
-        None, help="LLM model name", prompt="LLM model"
+    llm_model: str = typer.Option(
+        None, help="LLM model name. Default: saved config or 9router free model."
     ),
     cache_db: str = typer.Option("launch_engine_cache.db", help="Cache database path"),
     output_format: str = typer.Option("table", help="Output format: table, json, csv"),
 ):
     """Validate brand name candidates."""
-    # Apply defaults if not prompted/provided
-    if llm_provider is None:
-        llm_provider = "9router"
-    if llm_model is None:
-        llm_model = "kc/nvidia/nemotron-3-super-120b-a12b:free"
+    llm_provider, llm_model = _resolve_llm(llm_provider, llm_model)
+    _print_first_run_hint(output_format)
     try:
         # Load candidates from file
         candidates_path = Path(candidates_file)
@@ -225,6 +248,91 @@ def adapters():
     )
 
     console.print(table)
+
+
+@app.command()
+def configure():
+    """Interactive first-run setup: choose the LLM model from a list."""
+    console.print("[bold]Onomly — choose your LLM model[/bold]\n")
+    table = Table(title="Available models")
+    table.add_column("#", style="dim", width=4)
+    table.add_column("Model", style="cyan")
+    table.add_column("Provider", style="green")
+    table.add_column("Key needed", style="yellow")
+    table.add_column("Note", style="white")
+
+    for i, entry in enumerate(model_catalog.MODELS, 1):
+        table.add_row(
+            str(i),
+            entry.label,
+            entry.provider,
+            "yes" if entry.needs_key else "no",
+            entry.note,
+        )
+    console.print(table)
+
+    choice = typer.prompt(
+        "Select a model by number (or type a provider/model id)",
+        default="1",
+    )
+    chosen: ModelEntry | None = None
+    if choice.isdigit():
+        idx = int(choice) - 1
+        if 0 <= idx < len(model_catalog.MODELS):
+            chosen = model_catalog.MODELS[idx]
+    if chosen is None:
+        # Treat input as a raw provider/model id (e.g. "ollama/llama3:8b").
+        if "/" in choice:
+            prov, mod = choice.split("/", 1)
+            chosen = ModelEntry(
+                provider=prov.strip(),
+                model=mod.strip(),
+                label=choice,
+                needs_key=(prov.strip() not in ("9router", "ollama")),
+            )
+    if chosen is None:
+        console.print(f"[red]Invalid selection: {choice}[/red]")
+        raise typer.Exit(1)
+
+    if chosen.needs_key:
+        console.print(
+            f"[yellow]Note:[/yellow] {chosen.label} requires an API key in the "
+            "environment (e.g. OPENAI_API_KEY / ANTHROPIC_API_KEY). Onomly does not "
+            "store secrets."
+        )
+
+    cfg = OnomlyConfig(
+        llm_provider=chosen.provider,
+        llm_model=chosen.model,
+        configured=True,
+    )
+    saved = save_config(cfg)
+    console.print(
+        f"[green]Saved:[/green] {chosen.id}\nConfig written to [dim]{saved}[/dim]"
+    )
+
+
+@app.command()
+def models():
+    """List the available LLM models (non-interactive)."""
+    table = Table(title="Onomly LLM models")
+    table.add_column("#", style="dim", width=4)
+    table.add_column("Model", style="cyan")
+    table.add_column("Provider", style="green")
+    table.add_column("Key needed", style="yellow")
+    table.add_column("Note", style="white")
+    for i, entry in enumerate(model_catalog.MODELS, 1):
+        table.add_row(
+            str(i),
+            entry.label,
+            entry.provider,
+            "yes" if entry.needs_key else "no",
+            entry.note,
+        )
+    console.print(table)
+    console.print(
+        f"\n[dim]Default: {model_catalog.DEFAULT_MODEL.id}[/dim]"
+    )
 
 
 def _output_table(result: NameCandidateList):

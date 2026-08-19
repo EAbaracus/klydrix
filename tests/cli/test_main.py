@@ -438,3 +438,52 @@ def test_generate_names_error_handling():
 
         assert result.exit_code == 1
         assert "Error" in result.stdout
+
+
+def test_models_command_lists_catalog():
+    """Test the `models` command prints the catalog without prompting."""
+    result = runner.invoke(app, ["models"])
+    assert result.exit_code == 0
+    assert "Onomly LLM models" in result.stdout
+    assert "9router" in result.stdout
+    assert "Nemotron" in result.stdout
+
+
+def test_configure_selects_by_number(tmp_path, monkeypatch):
+    """Test `configure` picks a model from the numbered list and persists it."""
+    from launch_engine import config as config_mod
+
+    monkeypatch.setattr(config_mod, "config_path", lambda: tmp_path / "config.json")
+
+    result = runner.invoke(app, ["configure"], input="2\n")
+    assert result.exit_code == 0
+    assert "Saved:" in result.stdout
+    saved = config_mod.load_config(tmp_path / "config.json")
+    assert saved.configured is True
+    from launch_engine import models as model_catalog
+
+    assert saved.model_id == model_catalog.MODELS[1].id
+
+
+def test_configure_accepts_raw_id(tmp_path, monkeypatch):
+    """Test `configure` accepts a raw provider/model id input."""
+    from launch_engine import config as config_mod
+
+    monkeypatch.setattr(config_mod, "config_path", lambda: tmp_path / "config.json")
+
+    result = runner.invoke(app, ["configure"], input="ollama/llama3:8b\n")
+    assert result.exit_code == 0
+    saved = config_mod.load_config(tmp_path / "config.json")
+    assert saved.llm_provider == "ollama"
+    assert saved.llm_model == "llama3:8b"
+
+
+def test_configure_invalid_selection(tmp_path, monkeypatch):
+    """Test `configure` rejects an out-of-range / malformed selection."""
+    from launch_engine import config as config_mod
+
+    monkeypatch.setattr(config_mod, "config_path", lambda: tmp_path / "config.json")
+
+    result = runner.invoke(app, ["configure"], input="999\n")
+    assert result.exit_code == 1
+    assert "Invalid selection" in result.stdout

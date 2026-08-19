@@ -33,6 +33,24 @@ pip install -e ".[dev]"
 
 ## Quick Start
 
+### First-run: choose your model
+
+Onomly needs an LLM. Before the first run, pick one interactively:
+
+```bash
+onomly configure
+```
+
+This prints a numbered list of available models (9router free models, local Ollama, OpenAI, Anthropic) and saves your choice to `onomly/config.json` under your config dir (`%LOCALAPPDATA%/onomly` on Windows, `~/.config/onomly` on Linux). No secrets are stored — only the model selection; API keys come from the environment (or 9router, which needs none).
+
+You can also list the catalog non-interactively:
+
+```bash
+onomly models
+```
+
+If you skip `configure`, commands fall back to the default model (`9router` free) and print a one-line hint.
+
 ### CLI
 
 ```bash
@@ -42,9 +60,15 @@ onomly generate-names \
   --description "AI agent orchestration platform" \
   --target-markets "USA,EU" \
   --industry "Technology" \
-  --llm-provider ollama \
-  --llm-model qwen3:14b \
   --output-format table
+
+# Override the saved model for a single run
+onomly generate-names \
+  --project-codename "my_saas" \
+  --description "AI agent orchestration platform" \
+  --target-markets "USA,EU" \
+  --industry "Technology" \
+  --llm-provider openai --llm-model gpt-4o-mini
 
 # Validate a previously generated candidate file
 onomly validate \
