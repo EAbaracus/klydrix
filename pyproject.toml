@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "onomly"
-version = "0.1.0"
+version = "0.1.1"
 description = "Onomly — AI brand-naming and validation engine (generate, score, and clear names across domain, trademark, and social channels)"
 authors = [{name = "Hermes Agent"}]
 readme = "README.md"
