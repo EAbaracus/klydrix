@@ -1,10 +1,10 @@
-# KLYDRIX
+# Onomly
 
 > AI brand-naming and validation engine — generate, score, and clear candidate names across domain, trademark, and social channels.
 
-KLYDRIX (internal package: `launch_engine`) is a Python framework that turns a naming brief into a defensible shortlist. It generates brand-name candidates with an LLM, applies phonetic and semantic filters, scores each candidate, and then validates availability through pluggable adapters (RDAP domain lookup, trademark gateway, social-handle checks) with SQLite caching, token-bucket rate limiting, and retry-with-backoff.
+Onomly (internal package: `launch_engine`) is a Python framework that turns a naming brief into a defensible shortlist. It generates brand-name candidates with an LLM, applies phonetic and semantic filters, scores each candidate, and then validates availability through pluggable adapters (RDAP domain lookup, trademark gateway, social-handle checks) with SQLite caching, token-bucket rate limiting, and retry-with-backoff.
 
-The brand name **KLYDRIX** itself was produced by running this engine end-to-end — see [`NAMING.md`](NAMING.md) for the full naming brief, shortlist, validation evidence, and decision record.
+The brand name **Onomly** is a real-word blend (from *onomatics* / *onomastics* — the study of names — plus a friendly "-ly" suffix). It was chosen after the first coined name ("KLYDRIX") read as too invented; see [`NAMING.md`](NAMING.md) for the full brief, shortlist, validation evidence, and decision record.
 
 ## Features
 
@@ -18,18 +18,18 @@ The brand name **KLYDRIX** itself was produced by running this engine end-to-end
 ## Installation
 
 ```bash
-pip install klydrix
+pip install onomly
 ```
 
 For development:
 
 ```bash
-git clone https://github.com/EAbaracus/klydrix.git
-cd klydrix
+git clone https://github.com/EAbaracus/onomly.git
+cd onomly
 pip install -e ".[dev]"
 ```
 
-> **Note on package naming:** the importable package is `launch_engine` (kept stable to avoid breaking the existing module graph). The installed console script and published distribution name is `klydrix`.
+> **Note on package naming:** the importable package is `launch_engine` (kept stable to avoid breaking the existing module graph). The installed console script and published distribution name is `onomly`.
 
 ## Quick Start
 
@@ -37,7 +37,7 @@ pip install -e ".[dev]"
 
 ```bash
 # Generate candidates from a brief
-klydrix generate-names \
+onomly generate-names \
   --project-codename "my_saas" \
   --description "AI agent orchestration platform" \
   --target-markets "USA,EU" \
@@ -47,7 +47,7 @@ klydrix generate-names \
   --output-format table
 
 # Validate a previously generated candidate file
-klydrix validate \
+onomly validate \
   --candidates-file candidates.json \
   --target-markets "USA,EU" \
   --industry "Technology" \

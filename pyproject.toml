@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "klydrix"
+name = "onomly"
 version = "0.1.0"
-description = "KLYDRIX — AI brand-naming and validation engine (generate, score, and clear names across domain, trademark, and social channels)"
+description = "Onomly — AI brand-naming and validation engine (generate, score, and clear names across domain, trademark, and social channels)"
 authors = [{name = "Hermes Agent"}]
 readme = "README.md"
 requires-python = ">=3.11"
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.scripts]
-klydrix = "launch_engine.cli.main:app"
+onomly = "launch_engine.cli.main:app"
 
 [project.optional-dependencies]
 dev = [

@@ -1,18 +1,18 @@
-# Naming KLYDRIX
+# Naming Onomly
 
-This document records how the product name **KLYDRIX** was selected, using a 6-phase professional naming process (brief → generate → shortlist → validate → decide → launch). It is preserved so future rebrands or sub-product naming can follow the same evidence-led approach.
+This document records how the product name **Onomly** was selected, using a 6-phase professional naming process (brief → generate → shortlist → validate → decide → launch). It is preserved so future rebrands or sub-product naming can follow the same evidence-led approach.
 
 ## Selected Name
 
 | Property | Value |
 |---|---|
-| **Name** | KLYDRIX |
-| **Pronunciation** | /ˈklaɪ-drɪks/ — "KLY-driks" |
-| **Typology** | Abstract / Coined |
-| **Length** | 7 characters, 2 syllables |
+| **Name** | Onomly |
+| **Pronunciation** | /ˈɒn.əm.li/ — "ON-um-lee" |
+| **Typology** | Real-word blend (onomastics + "-ly") |
+| **Length** | 7 characters, 3 syllables |
 | **Tagline** | *"Name what's next."* |
-| **Primary domain** | klydrix.com (available) |
-| **Console command** | `klydrix` |
+| **Primary domain** | onomly.com (available) |
+| **Console command** | `onomly` |
 
 ## Phase 0 — Brief
 
@@ -24,50 +24,50 @@ This document records how the product name **KLYDRIX** was selected, using a 6-p
 
 **Selection criteria (scored 1–5):** distinctiveness, memorability, pronounceability, domain availability, trademark clearance, social-handle availability, relevance, brevity, brandability, future-proofing.
 
-**Constraints:** must not collide with internal module name `launch_engine`; avoid saturated terms (launch, engine, orion, nova, apex, vertex, synth, nexus); avoid negative meanings in English/Turkish/German; prefer ≤10 chars, ≤2 syllables.
+**Constraints:** must not collide with internal module name `launch_engine`; avoid saturated terms (launch, engine, orion, nova, apex, vertex, synth, nexus); avoid negative meanings in English/Turkish/German; prefer ≤10 chars; must read as a real or near-real word (no fully invented syllables).
 
 ## Phase 1 — Generation (10 lenses)
 
-Candidates were generated across all ten typology lenses: real words, metaphorical, compound, blended, abstract/coined, foreign-language, people/place/myth, modifier+noun, phrase/tagline-born, sound-symbolic. 16 candidates advanced to scoring.
+Candidates were generated across all ten typology lenses: real words, metaphorical, compound, blended, abstract/coined, foreign-language, people/place/myth, modifier+noun, phrase/tagline-born, sound-symbolic.
+
+**First pass (rejected):** A fully coined abstract name, **KLYDRIX**, was the initial winner. User feedback: *"klydrix çok uydurma oldu"* ("klydrix is too made-up / invented"). Lesson logged: the product audience reads a coined string as artificial, so the final name must be grounded in a real word or obvious word-blend.
+
+**Second pass (natural typologies):** real words (compass, prism, beacon, keystone, lodestar, augur, cipher, lexicon, eponym, moniker, sobriquet), and real-word + naming-suffix compounds (namekit, brandkit, namelab, monikerly, onomly, nameworks).
 
 ## Phase 2 — Shortlist
 
-Scored on the 10 criteria. Top tier:
+Real English words were uniformly **taken** on `.com` + X + GitHub (only `.io` free). The viable natural candidates were word-blends with `.com` still open:
 
-| Name | Typology | Avg |
-|---|---|---|
-| **KLYDRIX** | Coined | **4.2** |
-| **VYLDRANX** | Coined | 4.1 |
-| **MYRLIXIS** | Blended | 4.0 |
-| sylqen | Coined | 3.6 |
-| sylphari | Coined | 3.5 |
+| Name | Typology | .com | Notes |
+|---|---|---|---|
+| **onomly** | Blend (onomastics + -ly) | ✅ | Real-word root, friendly suffix |
+| monikerly | Blend (moniker + -ly) | ❌ (.com taken) | Strong but squatted |
+| nameworks | Compound | ❌ (.com taken) | GitHub also taken |
 
 ## Phase 3 — Validation Gates
 
-All checks performed with live tooling (RDAP, HTTP HEAD, GitHub/npm/PyPI APIs, web search):
+Live checks (RDAP, HTTP HEAD, GitHub/npm/PyPI APIs, web search):
 
 | Candidate | .com | .io | .ai | X | IG | LI | GitHub | npm | PyPI |
 |---|---|---|---|---|---|---|---|---|---|
-| **klydrix** | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| vyldranx | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| myrlixis | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| sylqen | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| sylphari | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| **onomly** | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| monikerly | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| nameworks | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ | ✅ | ✅ |
 
-- **Trademark:** no conflicts found for KLYDRIX / VYLDRANX / MYRLIXIS via web search. USPTO TESS requires authenticated access — manual review recommended before filing.
-- **Linguistic:** all three finalists are clean in English, Turkish, and German (no negative homophones; no non-typable characters on standard Turkish Q-keyboard layouts, unlike earlier `q…` candidates).
+- **Trademark:** no conflicts found for "Onomly" via web search. USPTO TESS requires authenticated access — manual review recommended before filing.
+- **Linguistic:** clean in English, Turkish, and German. "Onomly" derives from *onomatics* / *onomastics* (the study of names) — directly relevant to a naming tool, not a random coinage. No negative homophones; no untypable characters.
 
 ## Phase 4 — Decision
 
-**KLYDRIX** selected as the winner:
+**Onomly** selected:
 
-1. Shortest of the finalists (7 chars, 2 syllables) — easiest to type and remember.
-2. Sharp "K" onset reads as technical/precise; "drix" echoes "index" without being derivative.
-3. All critical domains (.com/.io/.ai) and the X/Twitter handle are available.
-4. No trademark conflicts found; GitHub/npm/PyPI all open.
-5. Pronounceable and brandable — strong in monospace terminal UIs.
+1. **Real-word root** — rooted in *onomastics* (the study of names), so it is semantically self-describing for a naming engine. No "uydurma" feel.
+2. **All critical domains open** — `.com` / `.io` / `.ai` all available (the scarce asset); GitHub + PyPI free.
+3. **Pronounceable & memorable** — ON-um-lee, 3 syllables, obvious spelling.
+4. **Brandable** — friendly "-ly" suffix softens the academic root into a product name.
+5. **No trademark conflicts** found in web search.
 
-**Runner-up rationale:** VYLDRANX has a less natural "vy" onset in English; MYRLIXIS reads slightly more "personal" (myr- = "my").
+**Rejected:** monikerly and nameworks — both have `.com` already registered (the dealbreaker for a primary domain).
 
 ## Phase 5 — Brand Identity
 
@@ -79,16 +79,16 @@ All checks performed with live tooling (RDAP, HTTP HEAD, GitHub/npm/PyPI APIs, w
 | text | `#EDE1C8` | primary text on dark |
 | danger | `#6B1E23` | error states |
 
-**Voice:** precise, confident, no fluff. Lead with the answer; never oversell. CLI/command references use lowercase monospace (`klydrix generate-names`); the brand name in prose uses `Klydrix` or `KLYDRIX`.
+**Voice:** precise, confident, no fluff. Lead with the answer; never oversell. CLI/command references use lowercase monospace (`onomly generate-names`); the brand name in prose uses `Onomly`.
 
-**Logo concept:** a terminal-window monogram — `K|LY` on the left (sidebar) and `> DRIX$` on the right (command prompt), where `>` marks the moment of creation.
+**Logo concept:** a terminal-window monogram — `O|NO` on the left (sidebar) and `> MLY$` on the right (command prompt), where `>` marks the moment of creation.
 
 ## Open Launch Actions (not yet executed)
 
 These require payment / manual authorization and were **not** performed during naming:
 
-- [ ] Register `klydrix.com`, `klydrix.io`, `klydrix.ai`
-- [ ] Claim `@klydrix` on X/Twitter
-- [ ] Create GitHub org `klydrix`
-- [ ] Publish `klydrix` on PyPI and npm
-- [ ] File USPTO trademark for "KLYDRIX" (Class 9 software, Class 42 SaaS)
+- [ ] Register `onomly.com`, `onomly.io`, `onomly.ai`
+- [ ] Claim `@onomly` on X/Twitter (currently taken — use a handle variant or acquire)
+- [ ] Create GitHub org `onomly`
+- [ ] Publish `onomly` on PyPI and npm
+- [ ] File USPTO trademark for "Onomly" (Class 9 software, Class 42 SaaS)

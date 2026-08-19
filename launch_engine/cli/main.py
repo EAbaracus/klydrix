@@ -18,7 +18,7 @@ from launch_engine.runtime_config import ensure_9router_env
 
 ensure_9router_env()
 
-app = typer.Typer(help="KLYDRIX - Brand naming and validation CLI")
+app = typer.Typer(help="Onomly - Brand naming and validation CLI")
 console = Console()
 
 
