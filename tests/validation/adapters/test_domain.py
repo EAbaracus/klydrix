@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import unittest.mock
 
+import httpx
 import pytest
 
 from launch_engine.validation.adapters.domain import DomainAdapter
@@ -76,9 +77,8 @@ async def test_domain_timeout(domain_adapter):
     with unittest.mock.patch.object(
         domain_adapter._client,
         "get",
-        side_effect=unittest.mock.Mock(side_effect=Exception("Timeout")),
+        side_effect=httpx.TimeoutException("Timeout"),
     ) as mock_get:
-        mock_get.side_effect = Exception("Timeout")
         result = await domain_adapter.validate("example.com")
 
     assert result.status == "unverifiable"
@@ -92,9 +92,8 @@ async def test_domain_network_error(domain_adapter):
     with unittest.mock.patch.object(
         domain_adapter._client,
         "get",
-        side_effect=unittest.mock.Mock(side_effect=Exception("Network error")),
+        side_effect=httpx.NetworkError("Network error"),
     ) as mock_get:
-        mock_get.side_effect = Exception("Network error")
         result = await domain_adapter.validate("example.com")
 
     assert result.status == "unverifiable"
