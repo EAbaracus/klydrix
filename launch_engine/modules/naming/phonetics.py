@@ -23,6 +23,7 @@ class PhoneticAssessment:
 
 VOWELS = frozenset("aeiouy")
 
+
 def estimate_syllables(name: str) -> int:
     """Estimate syllable count by counting vowel groups.
     Vowels: a, e, i, o, u, y (case-insensitive).
