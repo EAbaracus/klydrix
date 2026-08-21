@@ -7,7 +7,6 @@ import hashlib
 import json
 import time
 from typing import List, Optional
-from dataclasses import asdict
 
 from launch_engine.validation.adapters.base import (
     ValidationAdapter,
@@ -56,6 +55,7 @@ class ValidationPipeline:
             adapter: RateLimiter(adapter.policy.rate_limit_per_minute)
             for adapter in adapters
         }
+        self._adapter_policy_versions = {}
 
     async def validate_all(
         self, candidates: List[NameCandidate], brief: NamingBrief
@@ -289,18 +289,25 @@ class ValidationPipeline:
         context_hash = self._build_context_hash(brief)
         normalized_target = candidate.name.lower().strip()
 
-        # Convert policy to dict - handle both Pydantic models and dataclasses
-        if hasattr(adapter.policy, "model_dump"):
-            policy_dict = adapter.policy.model_dump()
-        elif hasattr(adapter.policy, "__dict__"):
-            policy_dict = adapter.policy.__dict__
-        else:
-            policy_dict = {}
+        # Fallback for adapters without name attribute in tests
+        adapter_key = getattr(adapter, "name", str(id(adapter)))
+
+        if adapter_key not in self._adapter_policy_versions:
+            # Convert policy to dict - handle both Pydantic models and dataclasses
+            if hasattr(adapter.policy, "model_dump"):
+                policy_dict = adapter.policy.model_dump()
+            elif hasattr(adapter.policy, "__dict__"):
+                policy_dict = adapter.policy.__dict__
+            else:
+                policy_dict = {}
+            self._adapter_policy_versions[adapter_key] = json.dumps(
+                policy_dict, sort_keys=True
+            )
 
         key_data = {
             "channel": self._get_channel_from_adapter(adapter).value,
             "adapter_version": adapter.version,
-            "policy_version": json.dumps(policy_dict, sort_keys=True),
+            "policy_version": self._adapter_policy_versions[adapter_key],
             "normalized_target": normalized_target,
             "context_hash": context_hash,
         }
