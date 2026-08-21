@@ -57,7 +57,8 @@ def check_phonetic_constraints(
         syllables = estimate_syllables(name)
         if syllables > constraints.max_syllables:
             notes.append(
-                f"Estimated syllable count {syllables} exceeds maximum {constraints.max_syllables}"
+                f"Estimated syllable count {syllables} exceeds maximum "
+                f"{constraints.max_syllables}"
             )
 
     # Check avoid_sounds

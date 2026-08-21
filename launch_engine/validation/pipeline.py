@@ -7,7 +7,6 @@ import hashlib
 import json
 import time
 from typing import List, Optional
-from dataclasses import asdict
 
 from launch_engine.validation.adapters.base import (
     ValidationAdapter,
@@ -96,7 +95,7 @@ class ValidationPipeline:
         # Process results, handling exceptions
         processed_results = []
         for result in results:
-            if isinstance(result, Exception):
+            if isinstance(result, BaseException):
                 # This shouldn't happen with return_exceptions=True, but just in case
                 processed_results.append(
                     self._create_unverifiable_result(

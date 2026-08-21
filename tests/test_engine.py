@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -109,7 +108,7 @@ def test_initialization_default_adapters(naming_brief: NamingBrief) -> None:
             kwargs.get("adapters") or args[0] if args else kwargs.get("adapters")
         )
         assert len(adapters_arg) == 3
-        # Check that the adapters are the ones we created (order: domain, trademark, social)
+        # Check the adapters are ours (order: domain, trademark, social)
         assert adapters_arg[0] == mock_domain_instance
         assert adapters_arg[1] == mock_trademark_instance
         assert adapters_arg[2] == mock_social_instance
@@ -118,7 +117,7 @@ def test_initialization_default_adapters(naming_brief: NamingBrief) -> None:
 def test_initialization_custom_adapters(naming_brief: NamingBrief) -> None:
     """Test LaunchEngine initialization with custom adapters."""
     # Create custom adapters with policy attribute
-    custom_adapters = []
+    custom_adapters: list[ValidationAdapter] = []
     for _ in range(2):
         adapter = MagicMock(spec=ValidationAdapter)
         adapter.policy = MagicMock()
@@ -322,7 +321,7 @@ async def test_validate_names_success(naming_brief: NamingBrief) -> None:
     ]
 
     with (
-        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.LLMAdapter"),
         patch("launch_engine.engine.SQLiteCache"),
         patch("launch_engine.engine.BrandNamingModule"),
         patch("launch_engine.engine.ValidationPipeline") as mock_vp,
@@ -383,7 +382,7 @@ async def test_validate_names_error(naming_brief: NamingBrief) -> None:
     ]
 
     with (
-        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.LLMAdapter"),
         patch("launch_engine.engine.SQLiteCache"),
         patch("launch_engine.engine.BrandNamingModule"),
         patch("launch_engine.engine.ValidationPipeline") as mock_vp,
@@ -430,7 +429,9 @@ async def test_validate_names_error(naming_brief: NamingBrief) -> None:
         for validation_result in result:
             assert validation_result.status == ValidationStatus.UNVERIFIABLE
             assert validation_result.confidence == Confidence.UNKNOWN
-            assert "Test error" in validation_result.evidence.raw.get("error", "")
+            assert "Test error" in (validation_result.evidence.raw or {}).get(
+                "error", ""
+            )
 
 
 @pytest.mark.asyncio

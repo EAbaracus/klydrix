@@ -5,19 +5,17 @@ Brand & Naming module - core logic for generating and evaluating brand names.
 from __future__ import annotations
 
 import json
-from typing import List, Optional
+from typing import List
 from datetime import datetime
 
-from pydantic import BaseModel
 
-from launch_engine.core.contracts import BaseModuleInput, BaseModuleOutput, LaunchModule
+from launch_engine.core.contracts import BaseModuleInput, LaunchModule
 from launch_engine.llm import LLMAdapter
 from .brief import NamingBrief, NameTypology
 from .candidates import NameCandidate, NameCandidateList, InternalAssessment
 from .phonetics import (
     check_phonetic_constraints,
     PhoneticConstraints as PhoneticsConstraintsDataclass,
-    estimate_syllables,
 )
 
 
@@ -266,7 +264,8 @@ class BrandNamingModule(LaunchModule):
         )
 
         prompt = f"""
-You are an expert brand naming consultant. Generate creative brand name candidates based on the following brief:
+You are an expert brand naming consultant. Generate creative brand name
+candidates based on the following brief:
 
 PROJECT OVERVIEW:
 - Project Codename: {brief.project_codename}
@@ -280,7 +279,13 @@ REQUIREMENTS:
 - Cover ALL naming typologies: {', '.join(typologies)}
 - Focus particularly on these preferred typologies: {', '.join(preferred_typologies)}
 - Avoid these terms: {', '.join(brief.avoid_terms) if brief.avoid_terms else 'None'}
-{f"- Phonetic constraints: max length {brief.phonetic_constraints.max_length}, max syllables {brief.phonetic_constraints.max_syllables}, avoid sounds {', '.join(brief.phonetic_constraints.avoid_sounds) if brief.phonetic_constraints and brief.phonetic_constraints.avoid_sounds else 'None'}" if brief.phonetic_constraints else ""}
+{f"- Phonetic constraints: max length {brief.phonetic_constraints.max_length}, "
+ f"max syllables {brief.phonetic_constraints.max_syllables}, "
+ f"avoid sounds {', '.join(brief.phonetic_constraints.avoid_sounds)}"
+ if brief.phonetic_constraints and brief.phonetic_constraints.avoid_sounds
+ else (f"- Phonetic constraints: max length {brief.phonetic_constraints.max_length}, "
+       f"max syllables {brief.phonetic_constraints.max_syllables}")
+ if brief.phonetic_constraints else ""}
 - Language: {brief.language}
 
 For each candidate, provide:
@@ -332,7 +337,8 @@ Do not include any other text, explanation, or formatting - just the JSON array.
             )
 
         prompt = f"""
-You are an expert brand naming evaluator. Score and rank the following brand name candidates based on how well they fit the brief:
+You are an expert brand naming evaluator. Score and rank the following
+brand name candidates based on how well they fit the brief:
 
 PROJECT BRIEF:
 - Project Codename: {brief.project_codename}

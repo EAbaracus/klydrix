@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime
 from typing import List, Optional, Tuple
 
@@ -23,7 +22,8 @@ from launch_engine.core.validation import (
 
 
 class LaunchEngine:
-    """Main application layer that orchestrates all components of the brand naming pipeline."""
+    """Main application layer that orchestrates all components
+    of the brand naming pipeline."""
 
     def __init__(
         self,
@@ -51,6 +51,7 @@ class LaunchEngine:
         self.cache = SQLiteCache(db_path=cache_db_path)
 
         # Initialize validation adapters (default to domain, trademark, social)
+        self.adapters: List[ValidationAdapter]
         if adapters is None:
             from launch_engine.validation.adapters.domain import DomainAdapter
             from launch_engine.validation.adapters.trademark import TrademarkAdapter
