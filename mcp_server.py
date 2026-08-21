@@ -20,7 +20,6 @@ import json
 import logging
 import sys
 from dataclasses import asdict
-from typing import Any
 
 # MCP servers communicate over stdio (stdout). LiteLLM and other libs may
 # write logs to stdout and corrupt the JSON-RPC stream. Silence them and
@@ -91,7 +90,8 @@ async def validate_names(candidates_json: str, brief_json: str) -> str:
     """Validate brand name candidates across domain, trademark, social media.
 
     Args:
-        candidates_json: JSON array of NameCandidate dicts (candidate_id, name, typology).
+        candidates_json: JSON array of NameCandidate dicts
+            (candidate_id, name, typology).
         brief_json: JSON string of NamingBrief fields.
     """
     brief = _brief_from_json(json.loads(brief_json))

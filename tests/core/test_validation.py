@@ -134,12 +134,12 @@ def test_model_validation_errors():
     with pytest.raises(ValidationError):
         Evidence()  # missing source and checked_at
 
-    # ValidationResult requires target, channel, status, confidence, evidence, validation_id, adapter_version, checked_at
-    now = datetime.now(timezone.utc)
-    evidence = Evidence(source="test", checked_at=now)
+    # ValidationResult requires target, channel, status, confidence,
+    # evidence, validation_id, adapter_version, checked_at
     with pytest.raises(ValidationError):
         ValidationResult()  # missing all required
 
-    # CacheEntry requires key, result, expires_at, adapter_version, policy_version, created_at
+    # CacheEntry requires key, result, expires_at, adapter_version,
+    # policy_version, created_at
     with pytest.raises(ValidationError):
         CacheEntry()  # missing all required

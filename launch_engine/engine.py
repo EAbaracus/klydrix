@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
 from datetime import datetime
 from typing import List, Optional, Tuple
 
@@ -23,7 +22,8 @@ from launch_engine.core.validation import (
 
 
 class LaunchEngine:
-    """Main application layer that orchestrates all components of the brand naming pipeline."""
+    """Main application layer that orchestrates all components
+    of the brand naming pipeline."""
 
     def __init__(
         self,

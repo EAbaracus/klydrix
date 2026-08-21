@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import List
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -109,7 +108,7 @@ def test_initialization_default_adapters(naming_brief: NamingBrief) -> None:
             kwargs.get("adapters") or args[0] if args else kwargs.get("adapters")
         )
         assert len(adapters_arg) == 3
-        # Check that the adapters are the ones we created (order: domain, trademark, social)
+        # Check the adapters are ours (order: domain, trademark, social)
         assert adapters_arg[0] == mock_domain_instance
         assert adapters_arg[1] == mock_trademark_instance
         assert adapters_arg[2] == mock_social_instance
@@ -322,7 +321,7 @@ async def test_validate_names_success(naming_brief: NamingBrief) -> None:
     ]
 
     with (
-        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.LLMAdapter"),
         patch("launch_engine.engine.SQLiteCache"),
         patch("launch_engine.engine.BrandNamingModule"),
         patch("launch_engine.engine.ValidationPipeline") as mock_vp,
@@ -383,7 +382,7 @@ async def test_validate_names_error(naming_brief: NamingBrief) -> None:
     ]
 
     with (
-        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.LLMAdapter"),
         patch("launch_engine.engine.SQLiteCache"),
         patch("launch_engine.engine.BrandNamingModule"),
         patch("launch_engine.engine.ValidationPipeline") as mock_vp,

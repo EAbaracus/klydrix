@@ -40,10 +40,10 @@ def test_base_module_input_validates_types():
 
 def test_launch_module_protocol():
     """Test that LaunchModule protocol is defined and can be used."""
-    # Check that LaunchModule has the required attributes (as a Protocol, it defines the interface)
-    # We can't instantiate a Protocol, but we can check that it is a Protocol by checking for _is_protocol
-    # However, for simplicity, we'll just check that we can use it as a base class for a class that we then check.
-    # Instead, we'll define a dummy class and check that it has the attributes that the protocol requires.
+    # Check that LaunchModule has the required attributes (as a Protocol, it
+    # defines the interface). We can't instantiate a Protocol, but we can check
+    # that it is one via _is_protocol. For simplicity, we'll just use it as a
+    # base class and verify the resulting dummy class has the required attrs.
 
     class DummyModule:
         name = "dummy"
@@ -59,7 +59,7 @@ def test_launch_module_protocol():
     # Check that run is callable
     assert callable(DummyModule.run)
 
-    # Additionally, we can check that LaunchModule is indeed a Protocol by checking its type
+    # Additionally, check that LaunchModule is indeed a Protocol by its type
     from typing import Protocol
 
     assert isinstance(LaunchModule, type(Protocol))
