@@ -89,7 +89,7 @@ async def main():
     engine = LaunchEngine(
         llm_provider="ollama",
         llm_model="qwen3:14b",
-        cache_db_path="klydrix_cache.db",
+        cache_db_path="onomly_cache.db",
     )
     brief = NamingBrief(
         project_codename="my_saas",
@@ -107,7 +107,7 @@ asyncio.run(main())
 
 ## Architecture
 
-KLYDRIX follows a modular pipeline architecture:
+Onomly follows a modular pipeline architecture:
 
 - **Brand Naming Module** (`launch_engine/modules/naming/`) — brief parsing, divergent LLM generation, phonetic mid-filter, convergent LLM scoring.
 - **LLM Adapter** (`launch_engine/llm.py`) — provider-agnostic calls via LiteLLM (ollama, openai, anthropic, 9router).
