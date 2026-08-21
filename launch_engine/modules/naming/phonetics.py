@@ -21,17 +21,19 @@ class PhoneticAssessment:
     notes: Optional[str] = None
 
 
+VOWELS = frozenset("aeiouy")
+
+
 def estimate_syllables(name: str) -> int:
     """Estimate syllable count by counting vowel groups.
     Vowels: a, e, i, o, u, y (case-insensitive).
     Consecutive vowels count as one group.
     """
     name = name.lower()
-    vowels = "aeiouy"
     count = 0
     prev_vowel = False
     for ch in name:
-        is_vowel = ch in vowels
+        is_vowel = ch in VOWELS
         if is_vowel and not prev_vowel:
             count += 1
             prev_vowel = True
