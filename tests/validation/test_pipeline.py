@@ -36,8 +36,8 @@ class MockValidationAdapter(ValidationAdapter):
         validate_result: Optional[ValidationResult] = None,
         validate_exception: Optional[Exception] = None,
     ):
-        self._version = version
-        self._policy = policy or AdapterPolicy(
+        self.version = version
+        self.policy = policy or AdapterPolicy(
             rate_limit_per_minute=60,
             cache_ttl_seconds=3600,
             timeout_seconds=30.0,
@@ -47,15 +47,7 @@ class MockValidationAdapter(ValidationAdapter):
         )
         self._validate_exception = validate_exception
         self.validate_call_count = 0
-        self.validate_called_with = None
-
-    @property
-    def version(self) -> str:
-        return self._version
-
-    @property
-    def policy(self) -> AdapterPolicy:
-        return self._policy
+        self.validate_called_with: Optional[str] = None
 
     async def validate(self, value: str) -> ValidationResult:
         """Mock validate method."""

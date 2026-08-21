@@ -117,7 +117,7 @@ def test_initialization_default_adapters(naming_brief: NamingBrief) -> None:
 def test_initialization_custom_adapters(naming_brief: NamingBrief) -> None:
     """Test LaunchEngine initialization with custom adapters."""
     # Create custom adapters with policy attribute
-    custom_adapters = []
+    custom_adapters: list[ValidationAdapter] = []
     for _ in range(2):
         adapter = MagicMock(spec=ValidationAdapter)
         adapter.policy = MagicMock()
@@ -429,7 +429,9 @@ async def test_validate_names_error(naming_brief: NamingBrief) -> None:
         for validation_result in result:
             assert validation_result.status == ValidationStatus.UNVERIFIABLE
             assert validation_result.confidence == Confidence.UNKNOWN
-            assert "Test error" in validation_result.evidence.raw.get("error", "")
+            assert "Test error" in (validation_result.evidence.raw or {}).get(
+                "error", ""
+            )
 
 
 @pytest.mark.asyncio

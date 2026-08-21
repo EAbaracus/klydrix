@@ -74,6 +74,7 @@ class SQLiteCache:
         """
         if self.db is None:
             await self.initialize()
+        assert self.db is not None  # narrowed after initialize()
 
         cursor = await self.db.execute(
             "SELECT result_json, expires_at FROM cache WHERE key = ?", (key,)
@@ -111,6 +112,7 @@ class SQLiteCache:
         """
         if self.db is None:
             await self.initialize()
+        assert self.db is not None  # narrowed after initialize()
 
         now = int(time.time())
         expires_at = now + ttl
@@ -139,6 +141,7 @@ class SQLiteCache:
         """Clear all cache entries."""
         if self.db is None:
             await self.initialize()
+        assert self.db is not None  # narrowed after initialize()
 
         await self.db.execute("DELETE FROM cache")
         await self.db.commit()

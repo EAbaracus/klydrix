@@ -57,3 +57,8 @@ ignore = []
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
+
+# Third-party modules that ship no type stubs.
+[[tool.mypy.overrides]]
+module = ["mcp.*", "yaml", "litellm.*"]
+ignore_missing_imports = true

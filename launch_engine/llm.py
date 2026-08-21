@@ -37,7 +37,7 @@ class LLMAdapter:
             return f"openai/{self.model}"
         elif self.provider == "anthropic":
             return f"anthropic/{self.model}"
-        elif self.provider == "9router":
+        else:  # "9router" (validated in __init__)
             # 9router is an OpenAI-compatible endpoint exposed via LiteLLM's
             # openai provider with a custom base URL (NINEROUTER_URL).
             # Prefix with "openai/" so LiteLLM routes through the openai
@@ -64,7 +64,7 @@ class LLMAdapter:
                 api_key=self.api_key,
             )
             # Extract the text from the response
-            return response.choices[0].message.content
+            return str(response.choices[0].message.content)
         except litellm.APIError as e:
             raise RuntimeError(f"LLM API call failed: {str(e)}") from e
         except Exception as e:
