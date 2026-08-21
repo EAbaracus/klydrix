@@ -78,7 +78,7 @@ async def test_domain_timeout(domain_adapter):
         domain_adapter._client,
         "get",
         side_effect=httpx.TimeoutException("Timeout"),
-    ) as mock_get:
+    ):
         result = await domain_adapter.validate("example.com")
 
     assert result.status == "unverifiable"
@@ -93,7 +93,7 @@ async def test_domain_network_error(domain_adapter):
         domain_adapter._client,
         "get",
         side_effect=httpx.NetworkError("Network error"),
-    ) as mock_get:
+    ):
         result = await domain_adapter.validate("example.com")
 
     assert result.status == "unverifiable"

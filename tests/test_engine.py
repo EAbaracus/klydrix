@@ -321,7 +321,7 @@ async def test_validate_names_success(naming_brief: NamingBrief) -> None:
     ]
 
     with (
-        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.LLMAdapter"),
         patch("launch_engine.engine.SQLiteCache"),
         patch("launch_engine.engine.BrandNamingModule"),
         patch("launch_engine.engine.ValidationPipeline") as mock_vp,
@@ -382,7 +382,7 @@ async def test_validate_names_error(naming_brief: NamingBrief) -> None:
     ]
 
     with (
-        patch("launch_engine.engine.LLMAdapter") as mock_llm,
+        patch("launch_engine.engine.LLMAdapter"),
         patch("launch_engine.engine.SQLiteCache"),
         patch("launch_engine.engine.BrandNamingModule"),
         patch("launch_engine.engine.ValidationPipeline") as mock_vp,

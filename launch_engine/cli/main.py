@@ -66,8 +66,7 @@ def generate_names(
     ),
     candidate_count: int = typer.Option(10, help="Number of candidates to generate"),
     llm_provider: str = typer.Option(
-        None,
-        help="LLM provider (9router, openai, anthropic, ollama). Default: saved config or 9router.",
+        None, help="LLM provider (9router, openai, anthropic, ollama). Default: saved config or 9router."
     ),
     llm_model: str = typer.Option(
         None, help="LLM model name. Default: saved config or 9router free model."
@@ -123,8 +122,7 @@ def validate(
     target_markets: str = typer.Option(..., help="Comma-separated target markets"),
     industry: str = typer.Option(..., help="Industry"),
     llm_provider: str = typer.Option(
-        None,
-        help="LLM provider (9router, openai, anthropic, ollama). Default: saved config or 9router.",
+        None, help="LLM provider (9router, openai, anthropic, ollama). Default: saved config or 9router."
     ),
     llm_model: str = typer.Option(
         None, help="LLM model name. Default: saved config or 9router free model."
@@ -331,7 +329,9 @@ def models():
             entry.note,
         )
     console.print(table)
-    console.print(f"\n[dim]Default: {model_catalog.DEFAULT_MODEL.id}[/dim]")
+    console.print(
+        f"\n[dim]Default: {model_catalog.DEFAULT_MODEL.id}[/dim]"
+    )
 
 
 def _output_table(result: NameCandidateList):
